@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VetExames - Lista de Exames</title>
+    <!-- PWA & Mobile Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="VetExames">
+    <link rel="apple-touch-icon" href="Prancheta 4.png">
+    <link rel="icon" type="image/png" href="Prancheta 4.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#1F5B5C',
+                            tealDark: '#153E3F',
+                            tealLight: '#E8F2F2',
+                            peach: '#F09B83',
+                            peachDark: '#D97E66',
+                            peachLight: '#FDF0EC',
+                            bg: '#FAF9F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
+
+    <!-- HEADER TOP -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-md mx-auto md:max-w-2xl px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="text-center">
+                <h1 class="font-bold text-base text-slate-800">Lista de Exames</h1>
+                <p class="text-[11px] text-slate-500">Histórico e Status de Pagamento</p>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-brand-tealLight flex items-center justify-center p-1 border border-brand-teal/10 shadow-sm overflow-hidden">
+                <img src="Prancheta 4.png" alt="VetExames Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-paw text-brand-teal text-xl\'></i>';">
+            </div>
+        </div>
+    </header>
+
+    <!-- BARRA DE BUSCA E FILTROS -->
+    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
+        
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="input-busca" oninput="filtrarExames()" placeholder="Buscar por pet, tutor ou veterinário..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-teal">
+        </div>
+
+        <!-- LISTA DE CARDS DE EXAMES -->
+        <div id="lista-exames" class="space-y-3">
+            <!-- Loading inicial -->
+            <div class="text-center py-12 text-slate-400">
+                <div class="w-8 h-8 border-3 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p class="text-xs">Carregando exames da planilha...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM MOBILE NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5">Início</span>
+            </a>
+            <a href="exames.html" class="flex flex-col items-center text-brand-teal font-bold transition">
+                <i class="fa-solid fa-notes-medical text-lg"></i>
+                <span class="text-[10px] mt-0.5">Exames</span>
+            </a>
+            <a href="cadastro_exame.html" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a href="pacientes.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-paw text-lg"></i>
+                <span class="text-[10px] mt-0.5">Pacientes</span>
+            </a>
+            <a href="financeiro.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span class="text-[10px] mt-0.5">Financeiro</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-brand-peach"></i>
+        <span id="toast-msg">Mensagem</span>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaOy6vRmz_rU6OYTJ46YrPsq4-NpPQ_sromqDMA7jKZWpij1lkiSc5jQGvDr6G20k/exec";
+
+        let todosExames = [];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarExames();
+        });
+
+        async function carregarExames() {
+            const container = document.getElementById('lista-exames');
+            try {
+                const res = await fetch(GOOGLE_APP_SCRIPT_URL);
+                const exames = await res.json();
+                todosExames = exames.reverse(); // Mostra os mais recentes primeiro
+
+                renderizarExames(todosExames);
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `
+                    <div class="text-center py-8 text-red-500 text-xs">
+                        <i class="fa-solid fa-circle-exclamation text-xl mb-1"></i>
+                        <p>Erro ao carregar exames da planilha.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderizarExames(lista) {
+            const container = document.getElementById('lista-exames');
+
+            if (!lista || lista.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                        <p class="text-xs">Nenhum exame encontrado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = lista.map(item => {
+                const isPago = (item.statusPagamento || '').toString().trim().toUpperCase() === 'PAGO';
+                
+                const badgeStatus = isPago ? `
+                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+                        <i class="fa-solid fa-circle-check text-[10px]"></i> PAGO
+                    </span>
+                ` : `
+                    <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-amber-200">
+                        <i class="fa-solid fa-clock text-[10px]"></i> PENDENTE
+                    </span>
+                `;
+
+                const fotoHtml = item.foto ? `
+                    <a href="${item.foto}" target="_blank" class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0">
+                        <img src="${item.foto}" alt="${item.nome}" class="w-full h-full object-cover">
+                    </a>
+                ` : `
+                    <div class="w-12 h-12 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-lg flex-shrink-0">
+                        <i class="fa-solid fa-paw"></i>
+                    </div>
+                `;
+
+                return `
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center gap-3">
+                                ${fotoHtml}
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm leading-tight">${item.nome || 'Sem Nome'}</h3>
+                                    <p class="text-xs text-brand-teal font-semibold mt-0.5">${item.tipoExame || 'Exame não especificado'}</p>
+                                </div>
+                            </div>
+                            <div>
+                                ${badgeStatus}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">TUTOR</span>
+                                <span class="font-semibold text-slate-700">${item.tutor || '-'}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">VETERINÁRIO</span>
+                                <span class="font-semibold text-slate-700">${item.veterinario || '-'}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-sm font-extrabold text-slate-800">${item.valor || 'R$ 0,00'}</span>
+                            <button onclick="alternarStatusPagamento(${item.rowIndex}, '${isPago ? '' : 'PAGO'}')" class="text-xs font-semibold px-3 py-1.5 rounded-xl border ${isPago ? 'border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition flex items-center gap-1.5">
+                                <i class="fa-solid ${isPago ? 'fa-rotate-left' : 'fa-check'}"></i>
+                                <span>${isPago ? 'Marcar Pendente' : 'Marcar como Pago'}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filtrarExames() {
+            const termo = document.getElementById('input-busca').value.toLowerCase();
+            const filtrados = todosExames.filter(item => {
+                return (item.nome || '').toLowerCase().includes(termo) ||
+                       (item.tutor || '').toLowerCase().includes(termo) ||
+                       (item.veterinario || '').toLowerCase().includes(termo) ||
+                       (item.tipoExame || '').toLowerCase().includes(termo);
+            });
+            renderizarExames(filtrados);
+        }
+
+        async function alternarStatusPagamento(rowIndex, novoStatus) {
+            exibirToast("Atualizando status de pagamento...");
+            try {
+                await fetch(GOOGLE_APP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'updatePaymentStatus',
+                        rowIndex: rowIndex,
+                        status: novoStatus
+                    })
+                });
+
+                exibirToast(novoStatus === 'PAGO' ? "Pagamento confirmado!" : "Status alterado para Pendente");
+                setTimeout(() => {
+                    carregarExames();
+                }, 1000);
+
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao alterar o status na planilha.");
+            }
+        }
+
+        function exibirToast(mensagem) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = mensagem;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
