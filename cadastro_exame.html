@@ -58,7 +58,7 @@
         }
     </style>
 </head>
-<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-12">
 
     <!-- HEADER TOP -->
     <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
@@ -268,34 +268,9 @@
     </main>
 
     <!-- BOTÃO FLUTUANTE REDONDO DE SALVAR (DISQUETE - FAB) -->
-    <button type="submit" form="form-exame" id="btn-submit" title="Salvar Dados" class="fixed bottom-20 right-5 w-14 h-14 bg-brand-teal hover:bg-brand-tealDark text-white rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-200 active:scale-90 z-50 ring-4 ring-white">
+    <button type="submit" form="form-exame" id="btn-submit" title="Salvar Dados" class="fixed bottom-6 right-5 w-14 h-14 bg-brand-teal hover:bg-brand-tealDark text-white rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-200 active:scale-90 z-50 ring-4 ring-white">
         <i class="fa-solid fa-floppy-disk"></i>
     </button>
-
-    <!-- BOTTOM MOBILE NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
-        <div class="flex justify-around items-center max-w-md mx-auto">
-            <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] mt-0.5">Início</span>
-            </a>
-            <a href="exames.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-notes-medical text-lg"></i>
-                <span class="text-[10px] mt-0.5">Exames</span>
-            </a>
-            <a href="cadastro_exame.html" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50">
-                <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="pacientes.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-paw text-lg"></i>
-                <span class="text-[10px] mt-0.5">Pacientes</span>
-            </a>
-            <a href="financeiro.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-chart-line text-lg"></i>
-                <span class="text-[10px] mt-0.5">Financeiro</span>
-            </a>
-        </div>
-    </nav>
 
     <!-- LOADING OVERLAY -->
     <div id="loading" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center flex-col text-white hidden">
