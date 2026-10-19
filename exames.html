@@ -164,12 +164,23 @@
 
         let todosExames = [];
 
-        // Converte links do Google Drive para formato de imagem direta para exibição nas tags <img>
+        // Converte qualquer formato de URL do Google Drive para a Thumbnail pública direta (sz=s1000)
         function converterLinkDrive(url) {
             if (!url) return '';
-            const match = url.match(/\/d\/([^\/]+)/);
-            if (match && match[1]) {
-                return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+            url = url.trim();
+            
+            let fileId = '';
+            if (url.includes('/d/')) {
+                const parts = url.split('/d/');
+                if (parts[1]) fileId = parts[1].split('/')[0].split('?')[0];
+            } else if (url.includes('id=')) {
+                const match = url.match(/id=([^&]+)/);
+                if (match && match[1]) fileId = match[1];
+            }
+
+            if (fileId) {
+                // Endpoint público sem restrição de CORS ou autenticação do navegador
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
             }
             return url;
         }
@@ -183,7 +194,7 @@
             try {
                 const res = await fetch(GOOGLE_APP_SCRIPT_URL);
                 const exames = await res.json();
-                todosExames = exames.reverse(); // Mostra os exames mais recentes no topo
+                todosExames = exames.reverse(); // Mais recentes primeiro
 
                 renderizarExames(todosExames);
             } catch (err) {
@@ -284,10 +295,10 @@
             const fotoDirect = converterLinkDrive(item.foto);
 
             const fotoModal = fotoDirect ? `
-                <div class="relative w-full h-48 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 mb-3 shadow-inner">
-                    <img src="${fotoDirect}" alt="${item.nome}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'flex items-center justify-center h-full text-xs text-slate-400\'>Foto indisponível</div>';">
+                <div class="relative w-full h-52 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 mb-3 shadow-inner flex items-center justify-center">
+                    <img src="${fotoDirect}" alt="${item.nome}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'flex flex-col items-center justify-center h-full text-xs text-slate-400 gap-2 p-4 text-center\'><i class=\'fa-solid fa-circle-exclamation text-amber-500 text-lg\'></i><span>Não foi possível carregar a imagem. Verifique se a pasta no Drive está compartilhada como pública ("Qualquer pessoa com o link").</span></div>';">
                     <a href="${item.foto}" target="_blank" class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 backdrop-blur-sm hover:bg-slate-900 transition shadow">
-                        <i class="fa-solid fa-up-right-from-square"></i> Abrir Foto Original no Drive
+                        <i class="fa-solid fa-up-right-from-square"></i> Abrir Original
                     </a>
                 </div>
             ` : '';
