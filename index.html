@@ -1,76 +1,348 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#2d6b6a"><meta name="description" content="Painel responsivo para gestão de exames, pacientes e financeiro.">
-  <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-:root{--teal:#2d6b6a;--teal-2:#3b8280;--coral:#f2ae97;--bg:#f4f7f6;--surface:#fff;--surface-2:#edf3f2;--text:#203332;--muted:#788b89;--border:#e1e9e7;--shadow:0 8px 30px #183c3a0b;--danger:#c65f55;--success:#397b61}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;transition:background .2s,color .2s}body.dark{--bg:#111b1b;--surface:#192626;--surface-2:#223332;--text:#edf5f3;--muted:#a0b4b1;--border:#2b403e;--shadow:0 8px 30px #0003;--teal:#367b79;--teal-2:#4a9692}button,input,select,textarea{font:inherit}button{cursor:pointer}.app-shell{min-height:100vh;display:flex}.sidebar{width:252px;background:var(--surface);border-right:1px solid var(--border);padding:27px 17px 18px;display:flex;flex-direction:column;flex-shrink:0}.brand{display:flex;align-items:center;gap:11px;padding:0 10px 35px}.brand-mark{width:42px;height:42px;border-radius:14px;background:var(--teal);color:white;display:grid;place-items:center;font-size:25px;font-weight:700;box-shadow:0 6px 14px #2d6b6a30}.brand strong{font:800 19px Manrope,sans-serif;display:block;letter-spacing:-.5px}.brand small{font-size:9px;letter-spacing:1.4px;color:var(--muted);font-weight:700}.side-label,.eyebrow{font-size:10px;letter-spacing:1.4px;font-weight:700;color:var(--muted)}.side-label{padding:0 12px 13px}.nav-list{display:grid;gap:5px}.nav-item{border:0;background:transparent;color:var(--muted);text-align:left;border-radius:11px;padding:13px 12px;display:flex;align-items:center;gap:13px;font-size:13px;font-weight:600;transition:.18s}.nav-item:hover{background:var(--surface-2);color:var(--text)}.nav-item.active{background:var(--teal);color:white;box-shadow:0 7px 15px #2d6b6a20}.nav-icon{font-size:20px;width:22px;text-align:center;font-weight:400}.sidebar-bottom{margin-top:auto}.help-card{background:var(--surface-2);border-radius:14px;padding:16px;margin:20px 2px}.help-icon{display:grid;place-items:center;width:30px;height:30px;background:var(--coral);color:#55352b;border-radius:9px;font-size:19px;margin-bottom:13px}.help-card strong{font:700 12px Manrope,sans-serif}.help-card p{font-size:11px;line-height:1.55;color:var(--muted);margin:7px 0 0}.profile{border-top:1px solid var(--border);padding:18px 6px 0;display:flex;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:50%;background:#f7d8cc;color:#744c40;display:grid;place-items:center;font-weight:700;font-size:11px}.profile strong{display:block;font-size:12px}.profile small{font-size:10px;color:var(--muted)}.profile-dot{width:7px;height:7px;background:#56a77e;border-radius:50%;margin-left:auto;align-self:flex-start;margin-top:5px}.main-area{flex:1;min-width:0;display:flex;flex-direction:column}.topbar{height:77px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 36px;gap:15px}.breadcrumb{font-size:12px;color:var(--muted)}.breadcrumb span{padding:0 9px;color:#b1c0be}.breadcrumb strong{color:var(--text)}.top-actions{display:flex;align-items:center;gap:22px}.today{font-size:11px;color:var(--muted)}.theme-toggle{display:flex;align-items:center;gap:9px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:100px;padding:7px 10px;font-size:11px;font-weight:600}.theme-toggle>span:first-child{font-size:17px;color:var(--teal)}.toggle-track{width:28px;height:16px;border-radius:20px;background:var(--teal);padding:2px;display:block}.toggle-track i{display:block;width:12px;height:12px;border-radius:50%;background:white;transition:transform .2s}.dark .toggle-track i{transform:translateX(12px)}.content{width:100%;max-width:1400px;margin:0 auto;padding:32px 36px 26px;flex:1}.page-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:26px}.page-heading h1{font:800 clamp(23px,2.4vw,31px) Manrope,sans-serif;letter-spacing:-1px;margin:7px 0 8px}.page-heading p{color:var(--muted);font-size:13px;margin:0;line-height:1.6}.heading-actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:11px 15px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}.btn-primary{background:var(--teal);color:white}.btn-primary:hover{background:var(--teal-2)}.btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text)}.btn-coral{background:var(--coral);color:#56362c}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:23px}.stat-card,.panel,.module-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}.stat-card{padding:19px;min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.stat-label{font-size:11px;color:var(--muted);font-weight:600}.stat-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#dcebea;color:var(--teal);font-size:19px}.stat-icon.coral{background:#fbe6de;color:#8c5544}.stat-value{font:800 28px Manrope,sans-serif;letter-spacing:-1px;margin:14px 0 6px}.stat-foot{font-size:10px;color:var(--muted)}.stat-foot strong{color:var(--success)}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr);gap:18px;margin-bottom:22px}.panel{padding:21px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:19px}.panel-head h2{font:700 15px Manrope,sans-serif;margin:0}.panel-head p{margin:5px 0 0;font-size:11px;color:var(--muted)}.text-link{border:0;background:none;color:var(--teal-2);font-size:11px;font-weight:700;padding:5px}.module-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.module-card{padding:17px 15px;text-align:left;color:var(--text);transition:transform .15s,border .15s;min-width:0}.module-card:hover{transform:translateY(-3px);border-color:var(--teal-2)}.module-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2);color:var(--teal);font-size:22px;margin-bottom:15px}.module-card:nth-child(2) .module-icon,.module-card:nth-child(5) .module-icon{background:#fbe6de;color:#955d4c}.module-card strong{display:block;font:700 12px Manrope,sans-serif;line-height:1.4}.module-card small{display:block;color:var(--muted);font-size:10px;line-height:1.5;margin-top:6px}.activity-list{display:grid}.activity-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}.activity-row:last-child{border-bottom:0}.activity-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);color:var(--teal);flex-shrink:0}.activity-info{min-width:0;flex:1}.activity-info strong{font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-info small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.activity-time{font-size:10px;color:var(--muted);white-space:nowrap}.status{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:5px 8px;background:#e1f2e9;color:#367658;font-size:10px;font-weight:700}.status.pending{background:#fff0df;color:#986a2b}.status.cancelled{background:#fae5e3;color:#a34e47}.dark .status{background:#244236;color:#9bd6b4}.dark .status.pending{background:#443622;color:#e7c083}.dark .status.cancelled{background:#472c2a;color:#e5a29b}.table-wrap{overflow-x:auto}.data-table{width:100%;border-collapse:collapse;min-width:590px}.data-table th{text-align:left;font-size:10px;letter-spacing:.6px;color:var(--muted);font-weight:700;padding:12px 13px;border-bottom:1px solid var(--border);white-space:nowrap}.data-table td{font-size:12px;padding:15px 13px;border-bottom:1px solid var(--border);white-space:nowrap}.data-table tr:last-child td{border-bottom:0}.patient-cell{display:flex;align-items:center;gap:9px}.patient-mini{width:30px;height:30px;border-radius:9px;background:var(--surface-2);color:var(--teal);display:grid;place-items:center;font-weight:700;font-size:10px}.muted{color:var(--muted)}.search-input{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:12px;min-width:190px;outline:none}.search-input:focus,input:focus,select:focus,textarea:focus{border-color:var(--teal-2);box-shadow:0 0 0 3px #2d6b6a15;outline:none}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:17px;flex-wrap:wrap}.toolbar-left,.toolbar-right{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.empty-state{text-align:center;padding:36px 15px;color:var(--muted);font-size:12px}.empty-state b{display:block;font-size:14px;color:var(--text);margin-bottom:7px}.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.report-card{padding:21px}.report-card .stat-value{font-size:25px}.bar-list{display:grid;gap:16px;margin-top:22px}.bar-row{display:grid;grid-template-columns:100px 1fr 30px;align-items:center;gap:10px;font-size:11px}.bar-track{height:8px;background:var(--surface-2);border-radius:20px;overflow:hidden}.bar-fill{height:100%;background:var(--teal-2);border-radius:20px}.bar-row:nth-child(2) .bar-fill{background:var(--coral)}.bar-row:nth-child(3) .bar-fill{background:#88b4a5}.finance-total{background:var(--teal);color:white;border-radius:15px;padding:23px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:20px}.finance-total small{opacity:.75;font-size:11px}.finance-total strong{display:block;font:800 27px Manrope,sans-serif;margin-top:8px}.finance-total .finance-note{font-size:11px;opacity:.75}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field{display:flex;flex-direction:column;gap:7px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:700;color:var(--muted)}.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 12px;color:var(--text);font-size:12px;min-width:0}.field textarea{resize:vertical;min-height:75px}.modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.modal-head h2{font:800 22px Manrope,sans-serif;margin:7px 0 0}.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:21px;display:grid;place-items:center}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:25px}dialog{width:min(600px,calc(100% - 28px));max-height:90vh;overflow:auto;border:1px solid var(--border);border-radius:18px;background:var(--surface);color:var(--text);padding:25px;box-shadow:0 20px 80px #0003}dialog::backdrop{background:#1020209c;backdrop-filter:blur(3px)}.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--surface);padding:13px 17px;border-radius:11px;font-size:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translateY(0)}footer{text-align:center;color:var(--muted);font-size:10px;padding:12px 20px 20px}footer span{padding:0 6px;color:var(--coral)}.mobile-menu{display:none}
-@media(max-width:1100px){.sidebar{width:220px}.content{padding:27px 24px}.topbar{padding:0 24px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.module-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.module-grid .module-card:nth-child(n+4){display:block}}
-@media(max-width:760px){.app-shell{display:block}.sidebar{position:fixed;z-index:15;top:0;bottom:0;left:0;width:270px;transform:translateX(-105%);transition:transform .22s;box-shadow:12px 0 40px #0002}.sidebar.open{transform:translateX(0)}.mobile-menu{display:grid;flex-shrink:0}.topbar{height:65px;padding:0 15px;justify-content:flex-start}.breadcrumb{flex:1}.top-actions{gap:8px}.today{display:none}.theme-toggle{padding:6px 8px;gap:6px}.theme-toggle #themeLabel{display:none}.content{padding:24px 15px}.page-heading{align-items:flex-start;flex-direction:column;margin-bottom:20px;gap:15px}.page-heading h1{font-size:25px}.heading-actions{width:100%}.heading-actions .btn{flex:1}.stats-grid{gap:10px}.stat-card{padding:14px}.stat-value{font-size:24px}.stat-label{font-size:10px}.dashboard-grid{grid-template-columns:1fr;gap:13px}.module-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.module-card{padding:14px}.module-card:last-child{grid-column:auto}.report-grid{grid-template-columns:1fr}.panel{padding:16px}.toolbar{align-items:stretch}.toolbar-left,.toolbar-right{width:100%}.search-input{min-width:0;flex:1;width:100%}.toolbar-right .btn{flex:1}.finance-total{padding:18px}.finance-total strong{font-size:23px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}dialog{padding:19px}.modal-actions .btn{flex:1}.toast{left:15px;right:15px;bottom:15px;text-align:center}}
-@media(min-width:761px){.sidebar.open{transform:none}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VetExames - Gestão de Exames Veterinários</title>
 
-</style>
-  <title>Clínica — Gestão de exames</title>
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="VetExames">
+    <meta name="application-name" content="VetExames">
+    <meta name="theme-color" content="#1F5B5C">
+
+    <!-- Icons & Apple Touch Icon for Home Screen Saving -->
+    <link rel="icon" type="image/png" sizes="192x192" href="Prancheta 4.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="Prancheta 4.png">
+    <link rel="shortcut icon" href="Prancheta 4.png">
+
+    <!-- Web App Manifest (Generated inline dynamically for direct home screen install capability) -->
+    <script>
+        const manifestData = {
+            "name": "VetExames - Gestão de Exames Veterinários",
+            "short_name": "VetExames",
+            "start_url": "./index.html",
+            "display": "standalone",
+            "background_color": "#FAF9F6",
+            "theme_color": "#1F5B5C",
+            "icons": [
+                {
+                    "src": "Prancheta 4.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "Prancheta 4.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = manifestURL;
+        document.head.appendChild(manifestLink);
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#1F5B5C',      // Verde Petróleo / Teal principal
+                            tealDark: '#153E3F',  // Teal escuro para hover
+                            tealLight: '#E8F2F2', // Teal suave para fundos
+                            peach: '#F09B83',     // Salmão / Coral
+                            peachDark: '#D97E66',
+                            peachLight: '#FDF0EC',
+                            bg: '#FAF9F6'         // Fundo off-white suave
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Barra de rolagem estilizada para visual limpo */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand"><div class="brand-mark">✚</div><div><strong>Clínica</strong><small>GESTÃO DE EXAMES</small></div></div>
-      <div class="side-label">MENU PRINCIPAL</div>
-      <nav class="nav-list" aria-label="Menu principal">
-        <button class="nav-item active" data-page="inicio"><span class="nav-icon">⌂</span>Início</button>
-        <button class="nav-item" data-page="cadastro"><span class="nav-icon">＋</span>Cadastro de exames</button>
-        <button class="nav-item" data-page="exames"><span class="nav-icon">▤</span>Exames</button>
-        <button class="nav-item" data-page="pacientes"><span class="nav-icon">♙</span>Pacientes</button>
-        <button class="nav-item" data-page="financeiro"><span class="nav-icon">＄</span>Financeiro</button>
-        <button class="nav-item" data-page="relatorios"><span class="nav-icon">▥</span>Relatórios</button>
-      </nav>
-      <div class="sidebar-bottom"><div class="help-card"><span class="help-icon">♡</span><strong>Organize sua rotina</strong><p>Seus exames e cadastros em um só lugar.</p></div><div class="profile"><div class="avatar">VB</div><div><strong>Administrador</strong><small>Painel de gestão</small></div><span class="profile-dot"></span></div></div>
-    </aside>
-    <main class="main-area">
-      <header class="topbar"><button class="icon-btn mobile-menu" id="menuBtn" aria-label="Abrir menu">☰</button><div class="breadcrumb">Painel <span>/</span> <strong id="crumb">Início</strong></div><div class="top-actions"><span class="today" id="today"></span><button class="theme-toggle" id="themeToggle" aria-label="Alternar tons claros e escuros"><span id="themeIcon">☼</span><span id="themeLabel">Tons claros</span><span class="toggle-track"><i></i></span></button></div></header>
-      <div class="content" id="content"></div>
-      <footer>Gestão de exames <span>•</span> Protótipo web responsivo</footer>
-    </main>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="modal"><form id="modalForm" method="dialog"><div class="modal-head"><div><span class="eyebrow" id="modalEyebrow">NOVO REGISTRO</span><h2 id="modalTitle">Adicionar registro</h2></div><button class="icon-btn" type="button" id="closeModal" aria-label="Fechar">×</button></div><div id="modalFields" class="form-grid"></div><div class="modal-actions"><button class="btn btn-secondary" type="button" id="cancelModal">Cancelar</button><button class="btn btn-primary" type="submit">Salvar registro</button></div></form></dialog>
-  <script>
-const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
-const store={read(k){try{return JSON.parse(localStorage.getItem('clinica_'+k))||[]}catch{return[]}},write(k,v){localStorage.setItem('clinica_'+k,JSON.stringify(v))}};
-let patients=store.read('patients'), exams=store.read('exams'), finance=store.read('finance'), page='inicio', searchTerm='', modalType='';
-const today=new Date();$('#today').textContent=today.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
-const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const dateBR=s=>s?new Date(s+'T12:00:00').toLocaleDateString('pt-BR'):'—';const initials=n=>(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const modules=[['cadastro','＋','Cadastro de exames','Registre novos atendimentos e exames.'],['exames','▤','Exames','Consulte e acompanhe os registros.'],['pacientes','♙','Pacientes','Mantenha os dados dos pacientes.'],['financeiro','＄','Financeiro','Entradas e controle financeiro.'],['relatorios','▥','Relatórios','Resumo da operação.']];
-function setPage(p){page=p;searchTerm='';$$('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.page===p));$('#sidebar').classList.remove('open');render()}
-$$('.nav-item').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');
-$('#themeToggle').onclick=()=>{document.body.classList.toggle('dark');let dark=document.body.classList.contains('dark');$('#themeLabel').textContent=dark?'Tons escuros':'Tons claros';$('#themeIcon').textContent=dark?'☾':'☼';localStorage.setItem('clinica_theme',dark?'dark':'light')};if(localStorage.getItem('clinica_theme')==='dark'){$('#themeToggle').click()}
-function heading(kicker,title,desc,actions=''){return `<div class="page-heading"><div><div class="eyebrow">${kicker}</div><h1>${title}</h1><p>${desc}</p></div><div class="heading-actions">${actions}</div></div>`}
-function stat(label,value,icon,foot,coral=false){return `<div class="stat-card"><div class="stat-top"><span class="stat-label">${label}</span><span class="stat-icon ${coral?'coral':''}">${icon}</span></div><div class="stat-value">${value}</div><div class="stat-foot">${foot}</div></div>`}
-function patientName(id){return patients.find(p=>p.id===id)?.name||'Paciente não informado'}
-function statusBadge(s){let cls=s==='Concluído'?'':s==='Cancelado'?'cancelled':'pending';return `<span class="status ${cls}">${escapeHTML(s||'Pendente')}</span>`}
-function table(headers,rows,empty='Nenhum registro por aqui ainda.'){return `<div class="table-wrap"><table class="data-table"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows||`<tr><td colspan="${headers.length}"><div class="empty-state"><b>${empty}</b>Adicione um registro para começar.</div></td></tr>`}</tbody></table></div>`}
-function patientRows(list){return list.map(p=>`<tr><td><div class="patient-cell"><div class="patient-mini">${escapeHTML(initials(p.name))}</div><strong>${escapeHTML(p.name)}</strong></div></td><td>${escapeHTML(p.phone||'—')}</td><td>${escapeHTML(p.email||'—')}</td><td>${dateBR(p.birth)}</td><td><button class="text-link" data-edit-patient="${p.id}">Ver detalhes</button></td></tr>`).join('')}
-function examRows(list){return list.map(e=>`<tr><td><strong>${escapeHTML(e.name)}</strong><div class="muted" style="font-size:10px;margin-top:4px">${escapeHTML(e.type||'Exame')}</div></td><td>${escapeHTML(patientName(e.patientId))}</td><td>${dateBR(e.date)}</td><td>${statusBadge(e.status)}</td><td>${money(e.price)}</td><td><button class="text-link" data-status="${e.id}">Atualizar</button></td></tr>`).join('')}
-function financeRows(list){return list.map(f=>`<tr><td>${dateBR(f.date)}</td><td><strong>${escapeHTML(f.description)}</strong></td><td>${escapeHTML(f.category||'—')}</td><td>${f.kind==='Entrada'?'<span class="status">Entrada</span>':'<span class="status cancelled">Saída</span>'}</td><td><strong>${f.kind==='Entrada'?'+ ':'− '}${money(f.amount)}</strong></td></tr>`).join('')}
-function render(){let names={inicio:'Início',cadastro:'Cadastro de exames',exames:'Exames',pacientes:'Pacientes',financeiro:'Financeiro',relatorios:'Relatórios'};$('#crumb').textContent=names[page]||'Início';let c=$('#content');if(page==='inicio')c.innerHTML=home();if(page==='cadastro')c.innerHTML=registerPage();if(page==='exames')c.innerHTML=examsPage();if(page==='pacientes')c.innerHTML=patientsPage();if(page==='financeiro')c.innerHTML=financePage();if(page==='relatorios')c.innerHTML=reportsPage();bindContent()}
-function home(){let pending=exams.filter(e=>e.status!=='Concluído'&&e.status!=='Cancelado').length, revenue=finance.filter(f=>f.kind==='Entrada').reduce((a,f)=>a+ +f.amount,0),out=finance.filter(f=>f.kind==='Saída').reduce((a,f)=>a+ +f.amount,0);let recent=exams.slice().sort((a,b)=>(b.created||'').localeCompare(a.created||'')).slice(0,4).map(e=>`<div class="activity-row"><div class="activity-icon">▤</div><div class="activity-info"><strong>${escapeHTML(e.name)}</strong><small>${escapeHTML(patientName(e.patientId))} · ${dateBR(e.date)}</small></div>${statusBadge(e.status)}</div>`).join('');return `${heading('VISÃO GERAL','Bom dia!','Acompanhe os principais indicadores da sua rotina.','<button class="btn btn-primary" data-go="cadastro">＋ Novo exame</button>')}<div class="dashboard-grid"><section class="panel"><div class="panel-head"><div><h2>Acesso rápido</h2><p>Escolha uma área para continuar</p></div></div><div class="module-grid">${modules.map(m=>`<button class="module-card" data-go="${m[0]}"><span class="module-icon">${m[1]}</span><strong>${m[2]}</strong><small>${m[3]}</small></button>`).join('')}</div></section><section class="panel"><div class="panel-head"><div><h2>Exames recentes</h2><p>Últimos registros adicionados</p></div><button class="text-link" data-go="exames">Ver todos →</button></div><div class="activity-list">${recent||'<div class="empty-state"><b>Nenhum exame cadastrado</b>Seus registros recentes aparecerão aqui.</div>'}</div></section></div><section class="panel"><div class="panel-head"><div><h2>Pacientes recentes</h2><p>Visão rápida dos cadastros</p></div><button class="text-link" data-go="pacientes">Ver pacientes →</button></div>${table(['PACIENTE','TELEFONE','E-MAIL','NASCIMENTO',''],patientRows(patients.slice(-4).reverse()))}</section>`}
-function registerPage(){return `${heading('ATENDIMENTO','Cadastro de exames','Registre um exame e associe-o a um paciente.')}<section class="panel"><div class="panel-head"><div><h2>Novo exame</h2><p>Preencha os campos abaixo para cadastrar o exame.</p></div><span class="status pending">Novo registro</span></div>${examForm()}</section><section class="panel" style="margin-top:18px"><div class="panel-head"><div><h2>Precisa cadastrar um paciente?</h2><p>Cadastre os dados antes de registrar o exame.</p></div><button class="btn btn-secondary" data-action="new-patient">＋ Novo paciente</button></div></section>`}
-function examForm(){return `<form id="examInlineForm"><div class="form-grid">${field('Nome do exame','name','text','Ex.: Hemograma',true)}${field('Tipo / categoria','type','text','Ex.: Laboratorial')}${field('Paciente','patientId','select','',true,patients.map(p=>[p.id,p.name]))}${field('Data do exame','date','date','',true)}${field('Valor (R$)','price','number','0,00',false, null,'0.01')}${field('Status','status','select','',true,[['Pendente','Pendente'],['Em andamento','Em andamento'],['Concluído','Concluído'],['Cancelado','Cancelado']])}<div class="field full"><label>Observações</label><textarea name="notes" placeholder="Informações adicionais (opcional)"></textarea></div></div><div class="modal-actions"><button class="btn btn-primary" type="submit">Salvar exame</button></div></form>`}
-function field(label,name,type,placeholder='',required=false,options=null,step=null){let control=type==='select'?`<select name="${name}" ${required?'required':''}><option value="">Selecione...</option>${(options||[]).map(o=>`<option value="${escapeHTML(o[0])}">${escapeHTML(o[1])}</option>`).join('')}</select>`:`<input name="${name}" type="${type}" placeholder="${placeholder}" ${required?'required':''} ${step?`step="${step}"`:''} ${type==='number'?'min="0"':''}>`;return `<div class="field"><label>${label}${required?' *':''}</label>${control}</div>`}
-function patientsPage(){let list=patients.filter(p=>(p.name+' '+p.phone+' '+p.email).toLowerCase().includes(searchTerm.toLowerCase()));return `${heading('CADASTROS','Pacientes','Consulte e gerencie os pacientes cadastrados.','<button class="btn btn-primary" data-action="new-patient">＋ Novo paciente</button>')}<section class="panel"><div class="toolbar"><div><strong style="font:700 14px Manrope">Todos os pacientes</strong><div class="muted" style="font-size:11px;margin-top:5px">${patients.length} cadastro(s)</div></div><div class="toolbar-right"><input class="search-input" id="searchBox" placeholder="Buscar paciente..." value="${escapeHTML(searchTerm)}"></div></div>${table(['PACIENTE','TELEFONE','E-MAIL','NASCIMENTO','AÇÕES'],patientRows(list))}</section>`}
-function examsPage(){let list=exams.filter(e=>(e.name+' '+patientName(e.patientId)+' '+e.status).toLowerCase().includes(searchTerm.toLowerCase()));return `${heading('ATENDIMENTOS','Exames','Consulte os registros e acompanhe o status.','<button class="btn btn-primary" data-go="cadastro">＋ Cadastrar exame</button>')}<section class="panel"><div class="toolbar"><div><strong style="font:700 14px Manrope">Todos os exames</strong><div class="muted" style="font-size:11px;margin-top:5px">${exams.length} registro(s)</div></div><div class="toolbar-right"><input class="search-input" id="searchBox" placeholder="Buscar exame ou paciente..." value="${escapeHTML(searchTerm)}"></div></div>${table(['EXAME','PACIENTE','DATA','STATUS','VALOR','AÇÕES'],examRows(list))}</section>`}
-function financePage(){let incoming=finance.filter(f=>f.kind==='Entrada').reduce((a,f)=>a+ +f.amount,0),out=finance.filter(f=>f.kind==='Saída').reduce((a,f)=>a+ +f.amount,0);return `${heading('GESTÃO','Financeiro','Registre entradas e saídas para acompanhar o saldo.','<button class="btn btn-coral" data-action="new-finance">＋ Lançamento</button>')}<div class="finance-total"><div><small>Saldo total registrado</small><strong>${money(incoming-out)}</strong><div class="finance-note">Valores adicionados manualmente</div></div><div><small>Entradas</small><strong style="font-size:18px">${money(incoming)}</strong><small style="display:block;margin-top:12px">Saídas: ${money(out)}</small></div></div><section class="panel"><div class="panel-head"><div><h2>Movimentações</h2><p>${finance.length} lançamento(s) registrado(s)</p></div></div>${table(['DATA','DESCRIÇÃO','CATEGORIA','TIPO','VALOR'],financeRows(finance.slice().reverse()))}</section>`}
-function reportsPage(){let done=exams.filter(e=>e.status==='Concluído').length,pending=exams.filter(e=>e.status==='Pendente'||e.status==='Em andamento').length,rev=finance.filter(f=>f.kind==='Entrada').reduce((a,f)=>a+ +f.amount,0),out=finance.filter(f=>f.kind==='Saída').reduce((a,f)=>a+ +f.amount,0),max=Math.max(done,pending,exams.length-done-pending,1);return `${heading('ACOMPANHAMENTO','Relatórios','Resumo dos registros cadastrados no sistema.','<button class="btn btn-secondary" data-action="export">⇩ Exportar CSV</button>')}<div class="report-grid">${stat('Pacientes',patients.length,'♙','Total de cadastros')}${stat('Exames concluídos',done,'✓','Registros concluídos',true)}${stat('Exames pendentes',pending,'◷','Aguardando andamento')}</div><div class="dashboard-grid" style="margin-top:18px"><section class="panel"><div class="panel-head"><div><h2>Status dos exames</h2><p>Distribuição dos registros atuais</p></div></div><div class="bar-list">${[['Concluídos',done],['Pendentes / andamento',pending],['Outros',exams.length-done-pending]].map(x=>`<div class="bar-row"><span>${x[0]}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(x[1]/max*100)}%"></div></div><strong>${x[1]}</strong></div>`).join('')}</div></section><section class="panel"><div class="panel-head"><div><h2>Resumo financeiro</h2><p>Lançamentos registrados manualmente</p></div></div><div class="activity-list"><div class="activity-row"><div class="activity-icon">↗</div><div class="activity-info"><strong>Entradas</strong><small>Valores recebidos</small></div><strong>${money(rev)}</strong></div><div class="activity-row"><div class="activity-icon">↘</div><div class="activity-info"><strong>Saídas</strong><small>Valores pagos</small></div><strong>${money(out)}</strong></div><div class="activity-row"><div class="activity-icon">＝</div><div class="activity-info"><strong>Saldo</strong><small>Entradas − saídas</small></div><strong>${money(rev-out)}</strong></div></div></section></div>`}
-function bindContent(){ $$('[data-go]').forEach(b=>b.onclick=()=>setPage(b.dataset.go));$$('[data-action="new-patient"]').forEach(b=>b.onclick=()=>openModal('patient'));$$('[data-action="new-finance"]').forEach(b=>b.onclick=()=>openModal('finance'));$('#searchBox')?.addEventListener('input',e=>{let pos=e.target.selectionStart;searchTerm=e.target.value;let old=page;render();let box=$('#searchBox');if(box){box.focus();box.setSelectionRange(pos,pos)}});$('#examInlineForm')?.addEventListener('submit',e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target));if(!patients.some(p=>p.id===d.patientId)){toast('Cadastre um paciente antes de registrar o exame.');return}exams.push({...d,id:crypto.randomUUID(),created:new Date().toISOString(),price:Number(d.price||0)});store.write('exams',exams);toast('Exame cadastrado com sucesso!');setPage('exames')});$$('[data-status]').forEach(b=>b.onclick=()=>{let e=exams.find(x=>x.id===b.dataset.status);if(!e)return;let next=prompt('Novo status: Pendente, Em andamento, Concluído ou Cancelado',e.status);if(['Pendente','Em andamento','Concluído','Cancelado'].includes(next)){e.status=next;store.write('exams',exams);render();toast('Status atualizado.')}});$$('[data-edit-patient]').forEach(b=>b.onclick=()=>{let p=patients.find(x=>x.id===b.dataset.editPatient);alert(`Paciente: ${p.name}\nTelefone: ${p.phone||'—'}\nE-mail: ${p.email||'—'}\nNascimento: ${dateBR(p.birth)}\nObservações: ${p.notes||'—'}`)});$('#exportCsv')?.addEventListener('click',exportCSV);$$('[data-action="export"]').forEach(b=>b.onclick=exportCSV)}
-function openModal(type){modalType=type;let fields=$('#modalFields');$('#modalTitle').textContent=type==='patient'?'Cadastrar paciente':'Novo lançamento financeiro';$('#modalEyebrow').textContent=type==='patient'?'DADOS DO PACIENTE':'MOVIMENTAÇÃO';if(type==='patient')fields.innerHTML=field('Nome completo','name','text','Nome do paciente',true)+field('Telefone','phone','tel','(00) 00000-0000')+field('E-mail','email','email','email@exemplo.com')+field('Data de nascimento','birth','date')+'<div class="field full"><label>Observações</label><textarea name="notes" placeholder="Informações adicionais (opcional)"></textarea></div>';else fields.innerHTML=field('Descrição','description','text','Ex.: Pagamento de exame',true)+field('Valor (R$)','amount','number','0,00',true,null,'0.01')+field('Tipo','kind','select','',true,[['Entrada','Entrada'],['Saída','Saída']])+field('Categoria','category','select','',false,[['Exames','Exames'],['Despesas','Despesas'],['Materiais','Materiais'],['Outros','Outros']])+field('Data','date','date','',true);$('#modal').showModal()}
-$('#closeModal').onclick=$('#cancelModal').onclick=()=>$('#modal').close();$('#modalForm').addEventListener('submit',e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target));if(modalType==='patient'){patients.push({...d,id:crypto.randomUUID(),created:new Date().toISOString()});store.write('patients',patients);$('#modal').close();toast('Paciente cadastrado com sucesso!');setPage('pacientes')}else{d.amount=Number(d.amount);finance.push({...d,id:crypto.randomUUID()});store.write('finance',finance);$('#modal').close();toast('Lançamento registrado!');setPage('financeiro')}});
-function toast(s){let t=$('#toast');t.textContent=s;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2800)}
-function exportCSV(){let rows=[['Tipo','Nome/Descrição','Paciente/Categoria','Data','Status/Tipo','Valor']];patients.forEach(p=>rows.push(['Paciente',p.name,p.phone,p.birth,'', '']));exams.forEach(e=>rows.push(['Exame',e.name,patientName(e.patientId),e.date,e.status,e.price]));finance.forEach(f=>rows.push(['Financeiro',f.description,f.category,f.date,f.kind,f.amount]));let csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');let url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})),a=document.createElement('a');a.href=url;a.download='relatorio-clinica.csv';a.click();URL.revokeObjectURL(url);toast('Relatório exportado.')}
-render();
-if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-20 md:pb-6">
 
-</script>
-</body></html>
+    <!-- TOP HEADER -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-md mx-auto md:max-w-4xl px-4 py-3 flex items-center justify-between">
+            <!-- Logo + App Title -->
+            <a href="index.html" class="flex items-center gap-3 group focus:outline-none">
+                <div class="w-10 h-10 rounded-xl bg-brand-tealLight flex items-center justify-center p-1 border border-brand-teal/10 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
+                    <img src="Prancheta 4.png" alt="VetExames Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-paw text-brand-teal text-xl\'></i>';">
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-800 group-hover:text-brand-teal transition-colors">
+                        VetExames
+                    </h1>
+                </div>
+            </a>
+
+            <!-- User Profile & Notifications -->
+            <div class="flex items-center gap-2">
+                <button onclick="notificar('Nenhuma notificação nova')" aria-label="Notificações" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition relative focus:outline-none">
+                    <i class="fa-regular font-bold fa-bell text-sm"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-peach rounded-full ring-2 ring-white"></span>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-brand-teal text-white flex items-center justify-center font-bold text-sm shadow-sm cursor-pointer hover:bg-brand-tealDark transition" title="Dr. Veterinário">
+                    DR
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-md mx-auto md:max-w-4xl px-4 pt-4 flex-1 w-full space-y-5">
+
+        <!-- MENU PRINCIPAL (GRID 2x2 DE ACESSO RÁPIDO) -->
+        <section>
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                    Menu Principal
+                </h2>
+                <span class="text-[11px] font-normal text-slate-400">Acesso Rápido</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3.5">
+                
+                <!-- BOTÃO 1: CADASTRO DE EXAMES -->
+                <a href="cadastro_exame.html" 
+                   class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95">
+                    <div class="w-11 h-11 rounded-xl bg-brand-teal text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-file-medical text-lg"></i>
+                    </div>
+                    <div class="absolute top-3 right-3 text-brand-teal/20 group-hover:text-brand-teal/40 transition-colors">
+                        <i class="fa-solid fa-plus-circle text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-brand-teal transition-colors">Cadastrar Exame</span>
+                        <span class="text-[11px] text-slate-500 line-clamp-1">Novo agendamento / laudo</span>
+                    </div>
+                </a>
+
+                <!-- BOTÃO 2: EXAMES -->
+                <a href="exames.html" 
+                   class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95">
+                    <div class="w-11 h-11 rounded-xl bg-brand-peach text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-notes-medical text-lg"></i>
+                    </div>
+                    <div class="absolute top-3 right-3 text-brand-peach/20 group-hover:text-brand-peach/40 transition-colors">
+                        <i class="fa-solid fa-list-check text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-brand-teal transition-colors">Exames</span>
+                        <span class="text-[11px] text-slate-500 line-clamp-1">Lista, laudos e status</span>
+                    </div>
+                </a>
+
+                <!-- BOTÃO 3: PACIENTES -->
+                <a href="pacientes.html" 
+                   class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95">
+                    <div class="w-11 h-11 rounded-xl bg-slate-800 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-paw text-lg"></i>
+                    </div>
+                    <div class="absolute top-3 right-3 text-slate-200 group-hover:text-slate-300 transition-colors">
+                        <i class="fa-solid fa-dog text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-brand-teal transition-colors">Pacientes</span>
+                        <span class="text-[11px] text-slate-500 line-clamp-1">Pets e Tutores</span>
+                    </div>
+                </a>
+
+                <!-- BOTÃO 4: FINANCEIRO -->
+                <a href="financeiro.html" 
+                   class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-chart-line text-lg"></i>
+                    </div>
+                    <div class="absolute top-3 right-3 text-emerald-100 group-hover:text-emerald-200 transition-colors">
+                        <i class="fa-solid fa-receipt text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-brand-teal transition-colors">Financeiro</span>
+                        <span class="text-[11px] text-slate-500 line-clamp-1">Recebimentos e faturamento</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- ÚLTIMOS EXAMES REGISTRADOS / PRÓXIMOS EXAMES -->
+        <section class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-brand-teal"></i>
+                    Próximos Exames
+                </h2>
+                <a href="exames.html" class="text-xs text-brand-teal font-semibold hover:underline flex items-center gap-1">
+                    Ver todos <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="divide-y divide-slate-100">
+                <!-- Item 1 -->
+                <div class="py-3 flex items-center justify-between first:pt-0 last:pb-0 hover:bg-slate-50/50 rounded-lg transition px-1">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-peachLight text-brand-peachDark font-bold flex items-center justify-center text-xs shrink-0">
+                            <i class="fa-solid fa-dog text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800 text-sm">Thor</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Canino</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Ultrassom Abdominal Completo</p>
+                            <p class="text-[11px] text-slate-400">Tutor: Maria Silva • 14:30</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200/60 shrink-0">
+                        Em espera
+                    </span>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="py-3 flex items-center justify-between first:pt-0 last:pb-0 hover:bg-slate-50/50 rounded-lg transition px-1">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-teal-50 text-brand-teal font-bold flex items-center justify-center text-xs shrink-0">
+                            <i class="fa-solid fa-cat text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800 text-sm">Mimi</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Felino</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Ecocardiograma com Doppler</p>
+                            <p class="text-[11px] text-slate-400">Tutor: Carlos Eduardo • 15:15</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/60 shrink-0">
+                        Agendado
+                    </span>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="py-3 flex items-center justify-between first:pt-0 last:pb-0 hover:bg-slate-50/50 rounded-lg transition px-1">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center text-xs shrink-0">
+                            <i class="fa-solid fa-dog text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800 text-sm">Bob</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Canino</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Raio-X Tórax (2 Projeções)</p>
+                            <p class="text-[11px] text-slate-400">Tutor: Ana Paula • 11:00</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1 shrink-0">
+                        <i class="fa-solid fa-check text-[10px]"></i> Concluído
+                    </span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM MOBILE NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-4xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            
+            <!-- Início (Ativo) -->
+            <a href="index.html" class="flex flex-col items-center text-brand-teal font-bold transition group">
+                <i class="fa-solid fa-house text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] mt-0.5">Início</span>
+            </a>
+
+            <!-- Exames -->
+            <a href="exames.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition group">
+                <i class="fa-solid fa-notes-medical text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] mt-0.5">Exames</span>
+            </a>
+
+            <!-- Floating Quick Add Button (Cadastrar Exame) -->
+            <a href="cadastro_exame.html" aria-label="Cadastrar Exame" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50 active:scale-90">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+
+            <!-- Pacientes -->
+            <a href="pacientes.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition group">
+                <i class="fa-solid fa-paw text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] mt-0.5">Pacientes</span>
+            </a>
+
+            <!-- Financeiro -->
+            <a href="financeiro.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition group">
+                <i class="fa-solid fa-chart-line text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] mt-0.5">Financeiro</span>
+            </a>
+
+        </div>
+    </nav>
+
+    <!-- TOAST / MENSAGEM FLUTUANTE DE AVISO -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-brand-peach"></i>
+        <span id="toast-msg">Mensagem</span>
+    </div>
+
+    <!-- JAVASCRIPT DE UTILITÁRIOS E NOTIFICAÇÃO -->
+    <script>
+        // Configuração para futura integração com Google Apps Script
+        const GOOGLE_APP_SCRIPT_URL = ""; 
+
+        // Sistema de notificação toast
+        function notificar(msg) {
+            exibirToast(msg);
+        }
+
+        function exibirToast(mensagem) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = mensagem;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
