@@ -10,9 +10,12 @@
     <link rel="apple-touch-icon" href="Prancheta 4.png">
     <link rel="icon" type="image/png" href="Prancheta 4.png">
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -35,8 +38,9 @@
         }
     </script>
 </head>
-<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
+<body class="bg-brand-bg text-slate-800 antialiased min-h-full flex flex-col pb-12">
 
+    <!-- HEADER SUPERIOR -->
     <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
         <div class="max-w-md mx-auto md:max-w-2xl px-4 py-3 flex items-center justify-between">
             <a href="index.html" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
@@ -54,36 +58,52 @@
 
     <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
         
-        <!-- SELETOR DOS ÚLTIMOS 6 MESES -->
-        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 pl-1">
-                <i class="fa-solid fa-calendar-days text-brand-teal"></i>
-                <span class="text-xs font-bold text-slate-700 uppercase">Período:</span>
+        <!-- SEGMENTED CONTROL / BOTÕES DE ALTERNÂNCIA DE VISÃO -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders text-brand-teal"></i> Visão Financeira:
+                </span>
+                <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/70">
+                    <button type="button" id="btn-visao-mensal" onclick="setVisao('mensal')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 bg-brand-teal text-white shadow-sm">
+                        Mensal
+                    </button>
+                    <button type="button" id="btn-visao-anual" onclick="setVisao('anual')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900">
+                        Anual
+                    </button>
+                </div>
             </div>
-            <select id="select-mes" onchange="mudarMes()" class="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-brand-teal text-slate-700">
-                <!-- Preenchido via JavaScript -->
-            </select>
+
+            <!-- SELETOR DE MÊS (EXIBIDO APENAS NA VISÃO MENSAL) -->
+            <div id="box-select-mes" class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                <label for="select-mes" class="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-days text-brand-teal"></i> Mês Selecionado:
+                </label>
+                <select id="select-mes" onchange="processarDashboard()" class="px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-brand-teal text-slate-700">
+                    <!-- Preenchido dinamicamente via JS -->
+                </select>
+            </div>
         </div>
 
         <!-- CARDS DE MENSURAÇÃO -->
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] text-slate-400 font-bold uppercase block">Faturamento Total do Mês</span>
+                    <span id="lbl-total" class="text-[10px] text-slate-400 font-bold uppercase block tracking-wider">Faturamento Total</span>
                     <span id="txt-total" class="text-2xl font-black text-slate-800">R$ 0,00</span>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center text-lg">
+                <div class="w-10 h-10 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center text-lg shadow-sm">
                     <i class="fa-solid fa-sack-dollar"></i>
                 </div>
             </div>
 
-            <div class="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200/80">
-                <span class="text-[10px] text-emerald-600 font-bold uppercase block">Recebido (Pago)</span>
+            <div class="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200/80 shadow-sm">
+                <span class="text-[10px] text-emerald-600 font-bold uppercase block tracking-wider">Recebido (Pago)</span>
                 <span id="txt-pago" class="text-lg font-black text-emerald-800">R$ 0,00</span>
             </div>
 
-            <div class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200/80">
-                <span class="text-[10px] text-amber-600 font-bold uppercase block">Pendente</span>
+            <div class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200/80 shadow-sm">
+                <span class="text-[10px] text-amber-600 font-bold uppercase block tracking-wider">Pendente</span>
                 <span id="txt-pendente" class="text-lg font-black text-amber-800">R$ 0,00</span>
             </div>
         </div>
@@ -110,35 +130,13 @@
 
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
-        <div class="flex justify-around items-center max-w-md mx-auto">
-            <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] mt-0.5">Início</span>
-            </a>
-            <a href="exames.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-notes-medical text-lg"></i>
-                <span class="text-[10px] mt-0.5">Exames</span>
-            </a>
-            <a href="cadastro_exame.html" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50">
-                <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="pacientes.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-paw text-lg"></i>
-                <span class="text-[10px] mt-0.5">Pacientes</span>
-            </a>
-            <a href="financeiro.html" class="flex flex-col items-center text-brand-teal font-bold transition">
-                <i class="fa-solid fa-chart-line text-lg"></i>
-                <span class="text-[10px] mt-0.5">Financeiro</span>
-            </a>
-        </div>
-    </nav>
-
     <script>
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaOy6vRmz_rU6OYTJ46YrPsq4-NpPQ_sromqDMA7jKZWpij1lkiSc5jQGvDr6G20k/exec";
 
         let cacheExames = [];
+        let visaoAtual = 'mensal'; // Default: 'mensal' ou 'anual'
 
+        // Limpa e converte strings monetárias/números para float
         function limparValor(val) {
             if (!val) return 0;
             if (typeof val === 'number') return val;
@@ -152,11 +150,12 @@
             return isNaN(num) ? 0 : num;
         }
 
+        // Formata número em Moeda Real (BRL)
         function formatarMoeda(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        // Gera a lista dos últimos 6 meses no formato "YYYY-MM" para o select
+        // Popula as opções do seletor dos últimos 6 meses
         function gerarUltimosMeses() {
             const select = document.getElementById('select-mes');
             select.innerHTML = '';
@@ -168,7 +167,6 @@
                 const mes = String(d.getMonth() + 1).padStart(2, '0');
                 const valorChave = `${ano}-${mes}`;
                 
-                // Nome amigável (ex: Outubro/2026)
                 const nomeMes = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
                 const nomeFormatado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
 
@@ -179,6 +177,27 @@
             }
         }
 
+        // Altera entre a visão Mensal e Anual atualizando visualmente os botões
+        function setVisao(tipo) {
+            visaoAtual = tipo;
+            const btnMensal = document.getElementById('btn-visao-mensal');
+            const btnAnual = document.getElementById('btn-visao-anual');
+            const boxMes = document.getElementById('box-select-mes');
+
+            if (tipo === 'mensal') {
+                btnMensal.className = "px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 bg-brand-teal text-white shadow-sm";
+                btnAnual.className = "px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900";
+                boxMes.classList.remove('hidden');
+            } else {
+                btnAnual.className = "px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 bg-brand-teal text-white shadow-sm";
+                btnMensal.className = "px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900";
+                boxMes.classList.add('hidden');
+            }
+
+            processarDashboard();
+        }
+
+        // Inicialização
         window.addEventListener('DOMContentLoaded', async () => {
             gerarUltimosMeses();
             try {
@@ -187,27 +206,37 @@
                 processarDashboard();
             } catch (err) {
                 console.error("Erro ao carregar dados financeiros:", err);
+                document.getElementById('resumo-clinicas').innerHTML = '<p class="text-rose-500 text-center py-2 font-medium">Falha ao carregar dados.</p>';
+                document.getElementById('resumo-tipos').innerHTML = '<p class="text-rose-500 text-center py-2 font-medium">Falha ao carregar dados.</p>';
             }
         });
 
-        function mudarMes() {
-            processarDashboard();
-        }
-
+        // Calcula e renderiza todos os dados do Dashboard
         function processarDashboard() {
+            const anoAtual = new Date().getFullYear().toString();
             const mesSelecionado = document.getElementById('select-mes').value; // Formato "YYYY-MM"
-            
+
             let total = 0;
             let pago = 0;
             let pendente = 0;
             const porTipo = {};
             const porClinica = {};
 
-            cacheExames.forEach(item => {
-                const dataExame = (item.dataExame || '').toString().trim(); // Esperado "YYYY-MM-DD" ou similar
-                if (!dataExame.startsWith(mesSelecionado)) return;
+            // Atualiza o rótulo do card principal
+            document.getElementById('lbl-total').innerText = visaoAtual === 'anual' 
+                ? `Faturamento Total de ${anoAtual} (Ano)` 
+                : 'Faturamento Total do Mês';
 
-                // Soma o valor principal + exame 2 + exame 3 do atendimento
+            cacheExames.forEach(item => {
+                const dataExame = (item.dataExame || '').toString().trim();
+
+                // Filtragem por visão selecionada
+                if (visaoAtual === 'anual') {
+                    if (!dataExame.startsWith(anoAtual)) return;
+                } else {
+                    if (!dataExame.startsWith(mesSelecionado)) return;
+                }
+
                 const v1 = limparValor(item.valor);
                 const v2 = limparValor(item.valor2);
                 const v3 = limparValor(item.valor3);
@@ -225,12 +254,11 @@
                 porClinica[clinica].qtd++;
                 porClinica[clinica].valor += valorAtendimento;
 
-                // Agrupamento por Tipo de Exame (Exame 1, 2 e 3)
+                // Agrupamento por Tipo de Exame
                 const tiposDesteAtendimento = [item.tipoExame, item.tipoExame2, item.tipoExame3];
                 tiposDesteAtendimento.forEach((t, idx) => {
                     if (t && t.trim() !== "") {
                         const nomeTipo = t.trim();
-                        // Atribui o valor correspondente ao exame se houver separado, ou divide igualmente
                         let valExame = idx === 0 ? v1 : (idx === 1 ? v2 : v3);
                         if (valExame === 0 && valorAtendimento > 0 && idx === 0) valExame = valorAtendimento;
 
@@ -241,19 +269,19 @@
                 });
             });
 
-            // Atualiza os cards de topo
+            // Atualiza os Cards de Valores
             document.getElementById('txt-total').innerText = formatarMoeda(total);
             document.getElementById('txt-pago').innerText = formatarMoeda(pago);
             document.getElementById('txt-pendente').innerText = formatarMoeda(pendente);
 
-            // Renderiza Clínicas
+            // Renderiza Lista por Clínica
             const containerClinicas = document.getElementById('resumo-clinicas');
             const clinicasArr = Object.entries(porClinica);
             if (!clinicasArr.length) {
-                containerClinicas.innerHTML = '<p class="text-slate-400 text-center py-2">Nenhum registro neste mês.</p>';
+                containerClinicas.innerHTML = `<p class="text-slate-400 text-center py-2">Nenhum registro encontrado para a visão ${visaoAtual}.</p>`;
             } else {
                 containerClinicas.innerHTML = clinicasArr.map(([nome, d]) => `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
                         <div>
                             <span class="font-bold text-slate-800 block">${nome}</span>
                             <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'atendimento' : 'atendimentos'}</span>
@@ -263,14 +291,14 @@
                 `).join('');
             }
 
-            // Renderiza Tipos de Exame
+            // Renderiza Lista por Tipo de Exame
             const containerTipos = document.getElementById('resumo-tipos');
             const tiposArr = Object.entries(porTipo);
             if (!tiposArr.length) {
-                containerTipos.innerHTML = '<p class="text-slate-400 text-center py-2">Nenhum exame neste mês.</p>';
+                containerTipos.innerHTML = `<p class="text-slate-400 text-center py-2">Nenhum exame encontrado para a visão ${visaoAtual}.</p>`;
             } else {
                 containerTipos.innerHTML = tiposArr.map(([nome, d]) => `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
                         <div>
                             <span class="font-bold text-slate-800 block">${nome}</span>
                             <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'realizado' : 'realizados'}</span>
