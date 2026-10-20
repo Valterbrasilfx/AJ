@@ -41,19 +41,26 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #printable-area, #printable-area * { visibility: visible; }
+            #printable-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; background: white; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
 
     <!-- HEADER TOP -->
-    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm no-print">
         <div class="max-w-md mx-auto md:max-w-2xl px-4 py-3 flex items-center justify-between">
             <a href="index.html" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <div class="text-center">
                 <h1 class="font-bold text-base text-slate-800">Pacientes & Tutores</h1>
-                <p class="text-[11px] text-slate-500">Base de Pacientes Cadastrados</p>
+                <p class="text-[11px] text-slate-500">Prontuários e Histórico Financeiro</p>
             </div>
             <div class="w-9 h-9 rounded-xl bg-brand-tealLight flex items-center justify-center p-1 border border-brand-teal/10 shadow-sm overflow-hidden">
                 <img src="Prancheta 4.png" alt="VetExames Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-paw text-brand-teal text-xl\'></i>';">
@@ -64,9 +71,9 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
         
-        <div class="relative">
+        <div class="relative no-print">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" id="input-busca" oninput="filtrarPacientes()" placeholder="Buscar por paciente ou tutor..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-teal shadow-sm">
+            <input type="text" id="input-busca" oninput="filtrarPacientes()" placeholder="Buscar por nome do pet ou tutor..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-teal shadow-sm">
         </div>
 
         <div id="lista-pacientes" class="space-y-3">
@@ -79,7 +86,7 @@
     </main>
 
     <!-- NAVEGAÇÃO INFERIOR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg no-print">
         <div class="flex justify-around items-center max-w-md mx-auto">
             <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
                 <i class="fa-solid fa-house text-lg"></i>
@@ -103,23 +110,34 @@
         </div>
     </nav>
 
-    <!-- MODAL HISTÓRICO PACIENTE -->
+    <!-- MODAL PRONTUÁRIO & DÉBITOS DO PACIENTE -->
     <div id="modal-paciente" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-white w-full max-w-md sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
-            <div class="sticky top-0 bg-white px-5 py-4 border-b border-slate-100 flex items-center justify-between z-10">
+            
+            <div class="sticky top-0 bg-white px-5 py-4 border-b border-slate-100 flex items-center justify-between z-10 no-print">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-brand-tealLight flex items-center justify-center text-brand-teal text-sm">
-                        <i class="fa-solid fa-paw"></i>
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
                     </div>
-                    <h2 class="font-bold text-slate-800 text-base" id="modal-titulo-paciente">Perfil do Paciente</h2>
+                    <h2 class="font-bold text-slate-800 text-base" id="modal-titulo-paciente">Prontuário do Paciente</h2>
                 </div>
                 <button onclick="fecharModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div id="modal-conteudo" class="p-5 space-y-4 flex-1"></div>
-            <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-end">
-                <button onclick="fecharModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs transition">Fechar</button>
+
+            <!-- ÁREA IMPRIMÍVEL / EXPORTÁVEL PARA PDF -->
+            <div id="printable-area" class="p-5 space-y-4 flex-1">
+                <div id="modal-conteudo"></div>
+            </div>
+
+            <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-between no-print">
+                <button onclick="imprimirRelatorioPaciente()" class="bg-brand-teal hover:bg-brand-tealDark text-white font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-file-pdf"></i> Baixar / Imprimir Relatório (PDF)
+                </button>
+                <button onclick="fecharModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs transition">
+                    Fechar
+                </button>
             </div>
         </div>
     </div>
@@ -128,6 +146,23 @@
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaOy6vRmz_rU6OYTJ46YrPsq4-NpPQ_sromqDMA7jKZWpij1lkiSc5jQGvDr6G20k/exec";
         let todosExames = [];
         let listaPacientes = [];
+
+        function limparValor(val) {
+            if (!val) return 0;
+            if (typeof val === 'number') return val;
+            let limpo = val.toString().replace(/[^\d,.-]/g, '');
+            if (limpo.includes(',') && limpo.includes('.')) {
+                limpo = limpo.replace(/\./g, '').replace(',', '.');
+            } else if (limpo.includes(',')) {
+                limpo = limpo.replace(',', '.');
+            }
+            const num = parseFloat(limpo);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatarMoeda(val) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
 
         function converterLinkDrive(url) {
             if (!url) return '';
@@ -151,24 +186,46 @@
                 const res = await fetch(GOOGLE_APP_SCRIPT_URL);
                 todosExames = await res.json();
                 
-                // Agrupa exames por chave única Pet + Tutor
+                // Agrupamento inteligente unificando maiúsculas/minúsculas de Nome e Tutor
                 const mapa = {};
                 todosExames.forEach(exame => {
-                    const chave = `${(exame.nome || '').trim().toLowerCase()}_${(exame.tutor || '').trim().toLowerCase()}`;
+                    const nomePet = (exame.nome || 'Sem Nome').trim();
+                    const nomeTutor = (exame.tutor || 'Sem Tutor').trim();
+                    const chave = `${nomePet.toLowerCase()}_${nomeTutor.toLowerCase()}`;
+
                     if (!mapa[chave]) {
                         mapa[chave] = {
-                            nome: exame.nome || 'Sem Nome',
-                            tutor: exame.tutor || '-',
+                            nome: nomePet,
+                            tutor: nomeTutor,
                             especie: exame.especie || '-',
                             raca: exame.raca || '',
                             foto: exame.foto || '',
                             telefoneTutor: exame.telefoneTutor || '',
                             cidadeUf: exame.cidadeUf || '',
                             examesCount: 0,
+                            totalGasto: 0,
+                            totalPago: 0,
+                            totalPendente: 0,
                             historico: []
                         };
                     }
+
+                    // Calcula valores do atendimento (Exame 1 + 2 + 3)
+                    const v1 = limparValor(exame.valor);
+                    const v2 = limparValor(exame.valor2);
+                    const v3 = limparValor(exame.valor3);
+                    const totalAtendimento = v1 + v2 + v3;
+
+                    const status = (exame.statusPagamento || '').toString().trim().toUpperCase();
+
                     mapa[chave].examesCount++;
+                    mapa[chave].totalGasto += totalAtendimento;
+                    if (status === 'PAGO') {
+                        mapa[chave].totalPago += totalAtendimento;
+                    } else {
+                        mapa[chave].totalPendente += totalAtendimento;
+                    }
+
                     mapa[chave].historico.push(exame);
                     if (!mapa[chave].foto && exame.foto) mapa[chave].foto = exame.foto;
                 });
@@ -196,6 +253,16 @@
                     </div>
                 ` : `<div class="w-12 h-12 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-lg flex-shrink-0"><i class="fa-solid fa-paw"></i></div>`;
 
+                const badgeDebito = p.totalPendente > 0 ? `
+                    <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200">
+                        Débito: ${formatarMoeda(p.totalPendente)}
+                    </span>
+                ` : `
+                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                        Quitado
+                    </span>
+                `;
+
                 return `
                     <div onclick="verHistoricoPaciente(${idx})" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3 cursor-pointer hover:border-brand-teal/50 transition">
                         <div class="flex items-center justify-between gap-3">
@@ -206,9 +273,12 @@
                                     <p class="text-xs text-slate-500 mt-0.5">${p.especie}${p.raca ? ' • ' + p.raca : ''}</p>
                                 </div>
                             </div>
-                            <span class="bg-brand-tealLight text-brand-teal text-[11px] font-bold px-2.5 py-1 rounded-full border border-brand-teal/20">
-                                ${p.examesCount} ${p.examesCount === 1 ? 'Exame' : 'Exames'}
-                            </span>
+                            <div class="text-right">
+                                <span class="bg-brand-tealLight text-brand-teal text-[10px] font-bold px-2.5 py-1 rounded-full border border-brand-teal/20 block mb-1">
+                                    ${p.examesCount} ${p.examesCount === 1 ? 'Atendimento' : 'Atendimentos'}
+                                </span>
+                                ${badgeDebito}
+                            </div>
                         </div>
                         <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
                             <div><span class="text-slate-400 block text-[10px]">TUTOR</span><span class="font-semibold text-slate-700">${p.tutor}</span></div>
@@ -227,38 +297,92 @@
             const p = listaPacientes[idx];
             if (!p) return;
             
-            document.getElementById('modal-titulo-paciente').innerText = p.nome;
+            document.getElementById('modal-titulo-paciente').innerText = `Prontuário: ${p.nome}`;
             const conteudo = document.getElementById('modal-conteudo');
             
             const fotoDirect = converterLinkDrive(p.foto);
             const fotoModal = fotoDirect ? `
-                <div class="relative w-full h-44 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 mb-2">
+                <div class="relative w-full h-40 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 mb-3">
                     <img src="${fotoDirect}" alt="${p.nome}" class="w-full h-full object-cover">
                 </div>
             ` : '';
 
-            const examesListaHtml = p.historico.map(h => `
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                    <div class="flex justify-between font-bold text-brand-teal">
-                        <span>${h.tipoExame || 'Exame'}</span>
-                        <span>${h.valor || 'R$ 0,00'}</span>
+            // Monta os exames detalhados
+            const examesListaHtml = p.historico.map(h => {
+                const isPago = (h.statusPagamento || '').toString().trim().toUpperCase() === 'PAGO';
+                const v1 = limparValor(h.valor);
+                const v2 = limparValor(h.valor2);
+                const v3 = limparValor(h.valor3);
+                const totalItem = v1 + v2 + v3;
+
+                let subExames = `<div class="font-semibold text-brand-teal">${h.tipoExame || 'Exame'} (${formatarMoeda(v1)})</div>`;
+                if (h.tipoExame2) subExames += `<div class="text-slate-600">${h.tipoExame2} (${formatarMoeda(v2)})</div>`;
+                if (h.tipoExame3) subExames += `<div class="text-slate-600">${h.tipoExame3} (${formatarMoeda(v3)})</div>`;
+
+                return `
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
+                        <div class="flex justify-between items-start border-b border-slate-200/60 pb-1">
+                            <div>
+                                <span class="text-[10px] text-slate-400 font-bold">DATA: ${h.dataExame || '-'}</span>
+                                <div class="mt-0.5">${subExames}</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-black text-slate-800">${formatarMoeda(totalItem)}</span>
+                                <div class="mt-0.5">
+                                    ${isPago ? '<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">PAGO</span>' : '<span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">PENDENTE</span>'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-slate-500 text-[11px] flex justify-between">
+                            <span>Vet: ${h.veterinario || '-'}</span>
+                            <span>Clínica: ${h.clinica || '-'}</span>
+                        </div>
+                        ${h.suspeitaClinica ? `<div class="text-[11px] text-slate-700"><b>Suspeita:</b> ${h.suspeitaClinica}</div>` : ''}
+                        ${h.anotacoes ? `<div class="text-[11px] text-slate-600 italic"><b>Anotações:</b> ${h.anotacoes}</div>` : ''}
                     </div>
-                    <div class="text-slate-500 text-[11px]">Data: ${h.dataExame || '-'} • Vet: ${h.veterinario || '-'}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             conteudo.innerHTML = `
                 ${fotoModal}
-                <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-1 text-xs">
-                    <p><b>Tutor:</b> ${p.tutor}</p>
-                    <p><b>Telefone:</b> ${p.telefoneTutor || '-'}</p>
-                    <p><b>Cidade:</b> ${p.cidadeUf || '-'}</p>
+                
+                <!-- CABEÇALHO DO PRONTUÁRIO -->
+                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1.5 text-xs">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><b>Paciente:</b> ${p.nome}</div>
+                        <div><b>Espécie:</b> ${p.especie} ${p.raca ? '(' + p.raca + ')' : ''}</div>
+                        <div><b>Tutor:</b> ${p.tutor}</div>
+                        <div><b>Telefone:</b> ${p.telefoneTutor || '-'}</div>
+                        <div class="col-span-2"><b>Cidade/UF:</b> ${p.cidadeUf || '-'}</div>
+                    </div>
                 </div>
-                <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mt-3">Histórico de Exames</h4>
-                <div class="space-y-2 max-h-56 overflow-y-auto">${examesListaHtml}</div>
+
+                <!-- RESUMO FINANCEIRO DO PACIENTE -->
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="bg-slate-100 p-2.5 rounded-xl border border-slate-200">
+                        <span class="text-[9px] text-slate-500 uppercase font-bold block">Total Geral</span>
+                        <span class="font-black text-slate-800">${formatarMoeda(p.totalGasto)}</span>
+                    </div>
+                    <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                        <span class="text-[9px] text-emerald-600 uppercase font-bold block">Pago</span>
+                        <span class="font-black text-emerald-800">${formatarMoeda(p.totalPago)}</span>
+                    </div>
+                    <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                        <span class="text-[9px] text-amber-600 uppercase font-bold block">Pendente</span>
+                        <span class="font-black text-amber-800">${formatarMoeda(p.totalPendente)}</span>
+                    </div>
+                </div>
+
+                <!-- HISTÓRICO DE EXAMES -->
+                <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider pt-1">Histórico de Atendimentos & Exames</h4>
+                <div class="space-y-2 max-h-60 overflow-y-auto pr-1">${examesListaHtml}</div>
             `;
 
             document.getElementById('modal-paciente').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function imprimirRelatorioPaciente() {
+            window.print();
         }
 
         function fecharModal() {
