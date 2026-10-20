@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VetExames - Pacientes & Tutores</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="VetExames">
+    <link rel="apple-touch-icon" href="Prancheta 4.png">
+    <link rel="icon" type="image/png" href="Prancheta 4.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#1F5B5C',
+                            tealDark: '#153E3F',
+                            tealLight: '#E8F2F2',
+                            peach: '#F09B83',
+                            peachDark: '#D97E66',
+                            peachLight: '#FDF0EC',
+                            bg: '#FAF9F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
+
+    <!-- HEADER TOP -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-md mx-auto md:max-w-2xl px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="text-center">
+                <h1 class="font-bold text-base text-slate-800">Pacientes & Tutores</h1>
+                <p class="text-[11px] text-slate-500">Base de Pacientes Cadastrados</p>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-brand-tealLight flex items-center justify-center p-1 border border-brand-teal/10 shadow-sm overflow-hidden">
+                <img src="Prancheta 4.png" alt="VetExames Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-paw text-brand-teal text-xl\'></i>';">
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
+        
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="input-busca" oninput="filtrarPacientes()" placeholder="Buscar por paciente ou tutor..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-teal shadow-sm">
+        </div>
+
+        <div id="lista-pacientes" class="space-y-3">
+            <div class="text-center py-12 text-slate-400">
+                <div class="w-8 h-8 border-3 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p class="text-xs">Carregando pacientes...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- NAVEGAÇÃO INFERIOR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5">Início</span>
+            </a>
+            <a href="exames.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-notes-medical text-lg"></i>
+                <span class="text-[10px] mt-0.5">Exames</span>
+            </a>
+            <a href="cadastro_exame.html" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a href="pacientes.html" class="flex flex-col items-center text-brand-teal font-bold transition">
+                <i class="fa-solid fa-paw text-lg"></i>
+                <span class="text-[10px] mt-0.5">Pacientes</span>
+            </a>
+            <a href="financeiro.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span class="text-[10px] mt-0.5">Financeiro</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MODAL HISTÓRICO PACIENTE -->
+    <div id="modal-paciente" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white w-full max-w-md sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+            <div class="sticky top-0 bg-white px-5 py-4 border-b border-slate-100 flex items-center justify-between z-10">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-brand-tealLight flex items-center justify-center text-brand-teal text-sm">
+                        <i class="fa-solid fa-paw"></i>
+                    </div>
+                    <h2 class="font-bold text-slate-800 text-base" id="modal-titulo-paciente">Perfil do Paciente</h2>
+                </div>
+                <button onclick="fecharModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-conteudo" class="p-5 space-y-4 flex-1"></div>
+            <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-end">
+                <button onclick="fecharModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs transition">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaOy6vRmz_rU6OYTJ46YrPsq4-NpPQ_sromqDMA7jKZWpij1lkiSc5jQGvDr6G20k/exec";
+        let todosExames = [];
+        let listaPacientes = [];
+
+        function converterLinkDrive(url) {
+            if (!url) return '';
+            url = url.trim();
+            let fileId = '';
+            if (url.includes('/d/')) {
+                const parts = url.split('/d/');
+                if (parts[1]) fileId = parts[1].split('/')[0].split('?')[0];
+            } else if (url.includes('id=')) {
+                const match = url.match(/id=([^&]+)/);
+                if (match && match[1]) fileId = match[1];
+            }
+            return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000` : url;
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarPacientes);
+
+        async function carregarPacientes() {
+            const container = document.getElementById('lista-pacientes');
+            try {
+                const res = await fetch(GOOGLE_APP_SCRIPT_URL);
+                todosExames = await res.json();
+                
+                // Agrupa exames por chave única Pet + Tutor
+                const mapa = {};
+                todosExames.forEach(exame => {
+                    const chave = `${(exame.nome || '').trim().toLowerCase()}_${(exame.tutor || '').trim().toLowerCase()}`;
+                    if (!mapa[chave]) {
+                        mapa[chave] = {
+                            nome: exame.nome || 'Sem Nome',
+                            tutor: exame.tutor || '-',
+                            especie: exame.especie || '-',
+                            raca: exame.raca || '',
+                            foto: exame.foto || '',
+                            telefoneTutor: exame.telefoneTutor || '',
+                            cidadeUf: exame.cidadeUf || '',
+                            examesCount: 0,
+                            historico: []
+                        };
+                    }
+                    mapa[chave].examesCount++;
+                    mapa[chave].historico.push(exame);
+                    if (!mapa[chave].foto && exame.foto) mapa[chave].foto = exame.foto;
+                });
+
+                listaPacientes = Object.values(mapa);
+                renderizarPacientes(listaPacientes);
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div class="text-center py-8 text-red-500 text-xs"><i class="fa-solid fa-triangle-exclamation text-xl mb-1"></i><p>Erro ao carregar pacientes.</p></div>`;
+            }
+        }
+
+        function renderizarPacientes(lista) {
+            const container = document.getElementById('lista-pacientes');
+            if (!lista.length) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400"><i class="fa-solid fa-paw text-3xl mb-2"></i><p class="text-xs">Nenhum paciente cadastrado.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = lista.map((p, idx) => {
+                const fotoDirect = converterLinkDrive(p.foto);
+                const fotoHtml = fotoDirect ? `
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0">
+                        <img src="${fotoDirect}" alt="${p.nome}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-sm\'><i class=\'fa-solid fa-paw\'></i></div>';">
+                    </div>
+                ` : `<div class="w-12 h-12 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-lg flex-shrink-0"><i class="fa-solid fa-paw"></i></div>`;
+
+                return `
+                    <div onclick="verHistoricoPaciente(${idx})" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3 cursor-pointer hover:border-brand-teal/50 transition">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                ${fotoHtml}
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm leading-tight">${p.nome}</h3>
+                                    <p class="text-xs text-slate-500 mt-0.5">${p.especie}${p.raca ? ' • ' + p.raca : ''}</p>
+                                </div>
+                            </div>
+                            <span class="bg-brand-tealLight text-brand-teal text-[11px] font-bold px-2.5 py-1 rounded-full border border-brand-teal/20">
+                                ${p.examesCount} ${p.examesCount === 1 ? 'Exame' : 'Exames'}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                            <div><span class="text-slate-400 block text-[10px]">TUTOR</span><span class="font-semibold text-slate-700">${p.tutor}</span></div>
+                            ${p.telefoneTutor ? `
+                                <a href="https://wa.me/55${p.telefoneTutor.replace(/\D/g, '')}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function verHistoricoPaciente(idx) {
+            const p = listaPacientes[idx];
+            if (!p) return;
+            
+            document.getElementById('modal-titulo-paciente').innerText = p.nome;
+            const conteudo = document.getElementById('modal-conteudo');
+            
+            const fotoDirect = converterLinkDrive(p.foto);
+            const fotoModal = fotoDirect ? `
+                <div class="relative w-full h-44 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 mb-2">
+                    <img src="${fotoDirect}" alt="${p.nome}" class="w-full h-full object-cover">
+                </div>
+            ` : '';
+
+            const examesListaHtml = p.historico.map(h => `
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+                    <div class="flex justify-between font-bold text-brand-teal">
+                        <span>${h.tipoExame || 'Exame'}</span>
+                        <span>${h.valor || 'R$ 0,00'}</span>
+                    </div>
+                    <div class="text-slate-500 text-[11px]">Data: ${h.dataExame || '-'} • Vet: ${h.veterinario || '-'}</div>
+                </div>
+            `).join('');
+
+            conteudo.innerHTML = `
+                ${fotoModal}
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-1 text-xs">
+                    <p><b>Tutor:</b> ${p.tutor}</p>
+                    <p><b>Telefone:</b> ${p.telefoneTutor || '-'}</p>
+                    <p><b>Cidade:</b> ${p.cidadeUf || '-'}</p>
+                </div>
+                <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mt-3">Histórico de Exames</h4>
+                <div class="space-y-2 max-h-56 overflow-y-auto">${examesListaHtml}</div>
+            `;
+
+            document.getElementById('modal-paciente').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-paciente').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function filtrarPacientes() {
+            const termo = document.getElementById('input-busca').value.toLowerCase();
+            const filtrados = listaPacientes.filter(p => 
+                p.nome.toLowerCase().includes(termo) || p.tutor.toLowerCase().includes(termo)
+            );
+            renderizarPacientes(filtrados);
+        }
+    </script>
+</body>
+</html>
