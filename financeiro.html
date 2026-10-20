@@ -44,7 +44,7 @@
             </a>
             <div class="text-center">
                 <h1 class="font-bold text-base text-slate-800">Financeiro</h1>
-                <p class="text-[11px] text-slate-500">Resumo de Faturamento e Recebimentos</p>
+                <p class="text-[11px] text-slate-500">Dashboard de Faturamento e Clínicas</p>
             </div>
             <div class="w-9 h-9 rounded-xl bg-brand-tealLight flex items-center justify-center p-1 border border-brand-teal/10 shadow-sm overflow-hidden">
                 <img src="Prancheta 4.png" alt="VetExames Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-paw text-brand-teal text-xl\'></i>';">
@@ -54,11 +54,22 @@
 
     <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
         
-        <!-- CARDS MENSURAÇÃO -->
+        <!-- SELETOR DOS ÚLTIMOS 6 MESES -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 pl-1">
+                <i class="fa-solid fa-calendar-days text-brand-teal"></i>
+                <span class="text-xs font-bold text-slate-700 uppercase">Período:</span>
+            </div>
+            <select id="select-mes" onchange="mudarMes()" class="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-brand-teal text-slate-700">
+                <!-- Preenchido via JavaScript -->
+            </select>
+        </div>
+
+        <!-- CARDS DE MENSURAÇÃO -->
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] text-slate-400 font-bold uppercase block">Faturamento Total</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase block">Faturamento Total do Mês</span>
                     <span id="txt-total" class="text-2xl font-black text-slate-800">R$ 0,00</span>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center text-lg">
@@ -77,13 +88,23 @@
             </div>
         </div>
 
-        <!-- RESUMO POR TIPO -->
+        <!-- RESUMO POR CLÍNICA -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
+            <h3 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-hospital text-brand-teal"></i> Faturamento por Clínica
+            </h3>
+            <div id="resumo-clinicas" class="space-y-2 text-xs">
+                <p class="text-slate-400 text-center py-3">Carregando clínicas...</p>
+            </div>
+        </div>
+
+        <!-- RESUMO POR TIPO DE EXAME -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
             <h3 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-chart-pie text-brand-teal"></i> Por Tipo de Exame
             </h3>
             <div id="resumo-tipos" class="space-y-2 text-xs">
-                <p class="text-slate-400 text-center py-4">Calculando totais...</p>
+                <p class="text-slate-400 text-center py-3">Carregando exames...</p>
             </div>
         </div>
 
@@ -116,53 +137,138 @@
     <script>
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaOy6vRmz_rU6OYTJ46YrPsq4-NpPQ_sromqDMA7jKZWpij1lkiSc5jQGvDr6G20k/exec";
 
+        let cacheExames = [];
+
         function limparValor(val) {
             if (!val) return 0;
             if (typeof val === 'number') return val;
-            const num = val.toString().replace(/[^\d,-]/g, '').replace(',', '.');
-            return parseFloat(num) || 0;
+            let limpo = val.toString().replace(/[^\d,.-]/g, '');
+            if (limpo.includes(',') && limpo.includes('.')) {
+                limpo = limpo.replace(/\./g, '').replace(',', '.');
+            } else if (limpo.includes(',')) {
+                limpo = limpo.replace(',', '.');
+            }
+            const num = parseFloat(limpo);
+            return isNaN(num) ? 0 : num;
         }
 
         function formatarMoeda(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
+        // Gera a lista dos últimos 6 meses no formato "YYYY-MM" para o select
+        function gerarUltimosMeses() {
+            const select = document.getElementById('select-mes');
+            select.innerHTML = '';
+            
+            const dataAtual = new Date();
+            for (let i = 0; i < 6; i++) {
+                const d = new Date(dataAtual.getFullYear(), dataAtual.getMonth() - i, 1);
+                const ano = d.getFullYear();
+                const mes = String(d.getMonth() + 1).padStart(2, '0');
+                const valorChave = `${ano}-${mes}`;
+                
+                // Nome amigável (ex: Outubro/2026)
+                const nomeMes = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+                const nomeFormatado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
+
+                const opt = document.createElement('option');
+                opt.value = valorChave;
+                opt.textContent = nomeFormatado;
+                select.appendChild(opt);
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
+            gerarUltimosMeses();
             try {
                 const res = await fetch(GOOGLE_APP_SCRIPT_URL);
-                const exames = await res.json();
+                cacheExames = await res.json();
+                processarDashboard();
+            } catch (err) {
+                console.error("Erro ao carregar dados financeiros:", err);
+            }
+        });
 
-                let total = 0;
-                let pago = 0;
-                let pendente = 0;
-                const porTipo = {};
+        function mudarMes() {
+            processarDashboard();
+        }
 
-                exames.forEach(item => {
-                    const v = limparValor(item.valor);
-                    const status = (item.statusPagamento || '').toString().trim().toUpperCase();
-                    const tipo = (item.tipoExame || 'Outros').trim();
+        function processarDashboard() {
+            const mesSelecionado = document.getElementById('select-mes').value; // Formato "YYYY-MM"
+            
+            let total = 0;
+            let pago = 0;
+            let pendente = 0;
+            const porTipo = {};
+            const porClinica = {};
 
-                    total += v;
-                    if (status === 'PAGO') pago += v;
-                    else pendente += v;
+            cacheExames.forEach(item => {
+                const dataExame = (item.dataExame || '').toString().trim(); // Esperado "YYYY-MM-DD" ou similar
+                if (!dataExame.startsWith(mesSelecionado)) return;
 
-                    if (!porTipo[tipo]) porTipo[tipo] = { qtd: 0, valor: 0 };
-                    porTipo[tipo].qtd++;
-                    porTipo[tipo].valor += v;
+                // Soma o valor principal + exame 2 + exame 3 do atendimento
+                const v1 = limparValor(item.valor);
+                const v2 = limparValor(item.valor2);
+                const v3 = limparValor(item.valor3);
+                const valorAtendimento = v1 + v2 + v3;
+
+                const status = (item.statusPagamento || '').toString().trim().toUpperCase();
+                const clinica = (item.clinica || 'Particular / Sem Clínica').trim();
+
+                total += valorAtendimento;
+                if (status === 'PAGO') pago += valorAtendimento;
+                else pendente += valorAtendimento;
+
+                // Agrupamento por Clínica
+                if (!porClinica[clinica]) porClinica[clinica] = { qtd: 0, valor: 0 };
+                porClinica[clinica].qtd++;
+                porClinica[clinica].valor += valorAtendimento;
+
+                // Agrupamento por Tipo de Exame (Exame 1, 2 e 3)
+                const tiposDesteAtendimento = [item.tipoExame, item.tipoExame2, item.tipoExame3];
+                tiposDesteAtendimento.forEach((t, idx) => {
+                    if (t && t.trim() !== "") {
+                        const nomeTipo = t.trim();
+                        // Atribui o valor correspondente ao exame se houver separado, ou divide igualmente
+                        let valExame = idx === 0 ? v1 : (idx === 1 ? v2 : v3);
+                        if (valExame === 0 && valorAtendimento > 0 && idx === 0) valExame = valorAtendimento;
+
+                        if (!porTipo[nomeTipo]) porTipo[nomeTipo] = { qtd: 0, valor: 0 };
+                        porTipo[nomeTipo].qtd++;
+                        porTipo[nomeTipo].valor += valExame;
+                    }
                 });
+            });
 
-                document.getElementById('txt-total').innerText = formatarMoeda(total);
-                document.getElementById('txt-pago').innerText = formatarMoeda(pago);
-                document.getElementById('txt-pendente').innerText = formatarMoeda(pendente);
+            // Atualiza os cards de topo
+            document.getElementById('txt-total').innerText = formatarMoeda(total);
+            document.getElementById('txt-pago').innerText = formatarMoeda(pago);
+            document.getElementById('txt-pendente').innerText = formatarMoeda(pendente);
 
-                const containerTipos = document.getElementById('resumo-tipos');
-                const tiposArr = Object.entries(porTipo);
+            // Renderiza Clínicas
+            const containerClinicas = document.getElementById('resumo-clinicas');
+            const clinicasArr = Object.entries(porClinica);
+            if (!clinicasArr.length) {
+                containerClinicas.innerHTML = '<p class="text-slate-400 text-center py-2">Nenhum registro neste mês.</p>';
+            } else {
+                containerClinicas.innerHTML = clinicasArr.map(([nome, d]) => `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                        <div>
+                            <span class="font-bold text-slate-800 block">${nome}</span>
+                            <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'atendimento' : 'atendimentos'}</span>
+                        </div>
+                        <span class="font-extrabold text-slate-700">${formatarMoeda(d.valor)}</span>
+                    </div>
+                `).join('');
+            }
 
-                if (!tiposArr.length) {
-                    containerTipos.innerHTML = '<p class="text-slate-400 text-center">Nenhum dado financeiro encontrado.</p>';
-                    return;
-                }
-
+            // Renderiza Tipos de Exame
+            const containerTipos = document.getElementById('resumo-tipos');
+            const tiposArr = Object.entries(porTipo);
+            if (!tiposArr.length) {
+                containerTipos.innerHTML = '<p class="text-slate-400 text-center py-2">Nenhum exame neste mês.</p>';
+            } else {
                 containerTipos.innerHTML = tiposArr.map(([nome, d]) => `
                     <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                         <div>
@@ -172,11 +278,8 @@
                         <span class="font-extrabold text-slate-700">${formatarMoeda(d.valor)}</span>
                     </div>
                 `).join('');
-
-            } catch (err) {
-                console.error(err);
             }
-        });
+        }
     </script>
 </body>
 </html>
