@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VetExames - Agendamentos</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="VetExames">
+    <link rel="apple-touch-icon" href="Prancheta 4.png">
+    <link rel="icon" type="image/png" href="Prancheta 4.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#1F5B5C',
+                            tealDark: '#153E3F',
+                            tealLight: '#E8F2F2',
+                            peach: '#F09B83',
+                            peachDark: '#D97E66',
+                            peachLight: '#FDF0EC',
+                            bg: '#FAF9F6'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
+
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-md mx-auto md:max-w-2xl px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="text-center">
+                <h1 class="font-bold text-base text-slate-800">Agendamentos</h1>
+                <p class="text-[11px] text-slate-500">Agenda de Exames Marcados</p>
+            </div>
+            <a href="agendar.html" class="bg-brand-teal text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:bg-brand-tealDark transition">
+                <i class="fa-solid fa-plus text-[10px]"></i> Agendar
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
+        
+        <!-- CALENDÁRIO DA SEMANA DINÂMICO -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-week text-brand-teal"></i> Semana Atual
+                </h2>
+                <button onclick="limparFiltro()" class="text-[11px] text-brand-teal font-semibold hover:underline">Ver Todos</button>
+            </div>
+            <!-- Carrossel de Dias da Semana -->
+            <div id="card-dias-semana" class="grid grid-cols-7 gap-1.5 text-center">
+                <!-- Injetado via JavaScript -->
+            </div>
+        </div>
+
+        <!-- SELETOR DE DATA MANUAL -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-2">
+            <label for="filtro-data" class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-calendar-day text-brand-teal"></i> Outra Data:
+            </label>
+            <input type="date" id="filtro-data" onchange="filtrarPorInputData(this.value)" class="text-xs py-1.5 px-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-brand-teal">
+        </div>
+
+        <!-- LISTA DE AGENDAMENTOS -->
+        <div id="lista-agendamentos" class="space-y-3">
+            <div class="text-center py-12 text-slate-400">
+                <div class="w-8 h-8 border-3 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p class="text-xs">Carregando agendamentos...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5">Início</span>
+            </a>
+            <a href="exames.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-notes-medical text-lg"></i>
+                <span class="text-[10px] mt-0.5">Exames</span>
+            </a>
+            <a href="agendar.html" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50" title="Agendar Agora">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a href="pacientes.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
+                <i class="fa-solid fa-paw text-lg"></i>
+                <span class="text-[10px] mt-0.5">Pacientes</span>
+            </a>
+            <a href="agendamentos.html" class="flex flex-col items-center text-brand-teal font-bold transition">
+                <i class="fa-solid fa-calendar-check text-lg"></i>
+                <span class="text-[10px] mt-0.5">Agenda</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzr4B_rxUSJWfSCmS1rgSsJc7uOsKhicOAB6w4fU-skFD1A0XIaowv2rLgWAtjIahIW6w/exec";
+        let todosAgendamentos = [];
+        let dataSelecionadaStr = null;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            gerarDiasSemana();
+            await carregarAgendamentos();
+        });
+
+        // Converte qualquer entrada de data (ISO String, Date ou DD/MM/YYYY) para Objeto Date para ordenação
+        function converterParaDate(dataStr) {
+            if (!dataStr) return new Date(0);
+            try {
+                if (typeof dataStr === 'string' && dataStr.includes('T')) {
+                    const d = new Date(dataStr);
+                    if (!isNaN(d.getTime())) return d;
+                }
+
+                const [dataPura, horaPura] = String(dataStr).trim().split(' ');
+                let dia, mes, ano;
+
+                if (dataPura.includes('/')) {
+                    [dia, mes, ano] = dataPura.split('/');
+                } else if (dataPura.includes('-')) {
+                    const partes = dataPura.split('-');
+                    if (partes[0].length === 4) {
+                        [ano, mes, dia] = partes;
+                    } else {
+                        [dia, mes, ano] = partes;
+                    }
+                }
+
+                let hora = 0, minuto = 0;
+                if (horaPura && horaPura.includes(':')) {
+                    [hora, minuto] = horaPura.split(':');
+                }
+
+                return new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia), parseInt(hora), parseInt(minuto));
+            } catch (e) {
+                return new Date(0);
+            }
+        }
+
+        async function carregarAgendamentos() {
+            const container = document.getElementById('lista-agendamentos');
+            try {
+                const res = await fetch(GOOGLE_APP_SCRIPT_URL);
+                const dadosBrutos = await res.json();
+                
+                // Mapeia os dados recebidos da planilha
+                todosAgendamentos = dadosBrutos.map(item => ({
+                    timestamp: item.timestamp || item[0],
+                    nome: item.nome || item[1],
+                    tutor: item.tutor || item[2],
+                    cidade: item.cidade || item[3],
+                    clinica: item.clinica || item[4],
+                    especie: item.especie || item[5],
+                    raca: item.raca || item[6],
+                    veterinario: item.veterinario || item[7],
+                    crmv: item.crmv || item[8],
+                    dataExame: item.dataExame || item[9],
+                    telefoneTutor: item.telefoneTutor || item[10],
+                    telefoneVeterinario: item.telefoneVeterinario || item[11],
+                    tipoExame: item.tipoExame || item[12],
+                    anotacoes: item.anotacoes || item[13]
+                }));
+
+                // ORDENAÇÃO: Do dia e horário mais próximo para o mais distante
+                todosAgendamentos.sort((a, b) => converterParaDate(a.dataExame) - converterParaDate(b.dataExame));
+
+                atualizarBadgesSemana();
+                filtrarPorData(dataSelecionadaStr);
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div class="text-center py-8 text-red-500 text-xs"><i class="fa-solid fa-circle-exclamation text-xl mb-1"></i><p>Erro ao carregar agenda.</p></div>`;
+            }
+        }
+
+        function gerarDiasSemana() {
+            const container = document.getElementById('card-dias-semana');
+            const hoje = new Date();
+            const diaSemanaAtual = hoje.getDay(); // 0 (Domingo) a 6 (Sábado)
+            
+            const primeiroDiaSemana = new Date(hoje);
+            primeiroDiaSemana.setDate(hoje.getDate() - diaSemanaAtual);
+
+            let html = '';
+            const diasNomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(primeiroDiaSemana);
+                d.setDate(primeiroDiaSemana.getDate() + i);
+                
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const dataBr = `${dd}/${mm}/${yyyy}`;
+                
+                const ehHoje = d.toDateString() === new Date().toDateString();
+
+                html += `
+                    <button onclick="selecionarDiaSemana('${dataBr}', this)" data-data="${dataBr}" class="dia-card flex flex-col items-center p-1.5 rounded-xl border transition pointer-events-auto ${ehHoje ? 'border-brand-teal bg-brand-teal/10 font-bold' : 'border-slate-100 bg-slate-50 hover:bg-slate-100'}">
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase pointer-events-none">${diasNomes[i]}</span>
+                        <span class="text-xs font-bold text-slate-700 my-0.5 pointer-events-none">${d.getDate()}</span>
+                        <span class="dot-evento w-1.5 h-1.5 rounded-full bg-transparent mt-0.5 pointer-events-none"></span>
+                    </button>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function atualizarBadgesSemana() {
+            document.querySelectorAll('.dia-card').forEach(btn => {
+                const dataBtn = btn.getAttribute('data-data');
+                const temExame = todosAgendamentos.some(item => normalizarData(item.dataExame) === normalizarData(dataBtn));
+                const dot = btn.querySelector('.dot-evento');
+                if (temExame && dot) {
+                    dot.classList.remove('bg-transparent');
+                    dot.classList.add('bg-brand-peach');
+                }
+            });
+        }
+
+        function selecionarDiaSemana(dataBr, elemento) {
+            document.querySelectorAll('.dia-card').forEach(b => {
+                b.classList.remove('border-brand-teal', 'bg-brand-teal/20', 'ring-2', 'ring-brand-teal/30');
+                b.classList.add('border-slate-100', 'bg-slate-50');
+            });
+            
+            elemento.classList.remove('border-slate-100', 'bg-slate-50');
+            elemento.classList.add('border-brand-teal', 'bg-brand-teal/20', 'ring-2', 'ring-brand-teal/30');
+            
+            dataSelecionadaStr = dataBr;
+            filtrarPorData(dataBr);
+        }
+
+        function filtrarPorInputData(val) {
+            if (!val) {
+                limparFiltro();
+                return;
+            }
+            const partes = val.split('-');
+            const dataBr = `${partes[2]}/${partes[1]}/${partes[0]}`;
+            dataSelecionadaStr = dataBr;
+            
+            document.querySelectorAll('.dia-card').forEach(b => {
+                b.classList.remove('border-brand-teal', 'bg-brand-teal/20', 'ring-2', 'ring-brand-teal/30');
+                b.classList.add('border-slate-100', 'bg-slate-50');
+            });
+
+            filtrarPorData(dataBr);
+        }
+
+        function limparFiltro() {
+            dataSelecionadaStr = null;
+            document.getElementById('filtro-data').value = '';
+            document.querySelectorAll('.dia-card').forEach(b => {
+                b.classList.remove('border-brand-teal', 'bg-brand-teal/20', 'ring-2', 'ring-brand-teal/30');
+                b.classList.add('border-slate-100', 'bg-slate-50');
+            });
+            renderizarAgendamentos(todosAgendamentos);
+        }
+
+        function filtrarPorData(dataBr) {
+            if (!dataBr) {
+                renderizarAgendamentos(todosAgendamentos);
+                return;
+            }
+            const filtrados = todosAgendamentos.filter(a => normalizarData(a.dataExame) === normalizarData(dataBr));
+            renderizarAgendamentos(filtrados, dataBr);
+        }
+
+        // Normaliza formatos ISO (Ex: 2026-10-23T23:07:00.000Z) para apenas a data no padrão brasileiro (DD/MM/YYYY)
+        function normalizarData(dataStr) {
+            if (!dataStr) return '';
+            
+            if (typeof dataStr === 'string' && dataStr.includes('T')) {
+                const d = new Date(dataStr);
+                if (!isNaN(d.getTime())) {
+                    const dia = String(d.getDate()).padStart(2, '0');
+                    const mes = String(d.getMonth() + 1).padStart(2, '0');
+                    const ano = d.getFullYear();
+                    return `${dia}/${mes}/${ano}`;
+                }
+            }
+
+            const dataPura = String(dataStr).trim().split(' ')[0];
+            
+            if (dataPura.includes('-')) {
+                const p = dataPura.split('-');
+                if (p[0].length === 4) return `${p[2]}/${p[1]}/${p[0]}`;
+            }
+            return dataPura.trim();
+        }
+
+        // Formata strings de data/hora ISO ou normais em badges legíveis no fuso local
+        function formatarDataHoraEstetica(dataExameRaw) {
+            if (!dataExameRaw) return { data: 'N/I', hora: '' };
+
+            let dataObj;
+
+            if (typeof dataExameRaw === 'string' && dataExameRaw.includes('T')) {
+                dataObj = new Date(dataExameRaw);
+            } else if (typeof dataExameRaw === 'string' && dataExameRaw.includes('/')) {
+                const partes = dataExameRaw.trim().split(' ');
+                return {
+                    data: partes[0] || 'N/I',
+                    hora: partes[1] || ''
+                };
+            } else {
+                dataObj = new Date(dataExameRaw);
+            }
+
+            if (!isNaN(dataObj.getTime())) {
+                const dia = String(dataObj.getDate()).padStart(2, '0');
+                const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+                const ano = dataObj.getFullYear();
+                
+                const hora = String(dataObj.getHours()).padStart(2, '0');
+                const minuto = String(dataObj.getMinutes()).padStart(2, '0');
+
+                return {
+                    data: `${dia}/${mes}/${ano}`,
+                    hora: `${hora}:${minuto}`
+                };
+            }
+
+            return { data: String(dataExameRaw), hora: '' };
+        }
+
+        function renderizarAgendamentos(lista, filtroAplicado = '') {
+            const container = document.getElementById('lista-agendamentos');
+            if (!lista || lista.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-200/80 p-6">
+                        <i class="fa-solid fa-calendar-xmark text-3xl mb-2 text-slate-300"></i>
+                        <p class="text-xs font-medium">Nenhum exame agendado ${filtroAplicado ? 'para ' + filtroAplicado : ''}.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = lista.map(item => {
+                const dataHora = formatarDataHoraEstetica(item.dataExame);
+                
+                return `
+                <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3">
+                    
+                    <!-- CABEÇALHO DO CARD COM DATA, HORA E CLÍNICA -->
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-brand-tealLight text-brand-teal border border-brand-teal/20 flex items-center gap-1">
+                                <i class="fa-regular fa-calendar text-[10px]"></i> ${dataHora.data}
+                            </span>
+                            ${dataHora.hora ? `
+                            <span class="text-[11px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-700 flex items-center gap-1">
+                                <i class="fa-regular fa-clock text-[10px] text-brand-teal"></i> ${dataHora.hora}
+                            </span>` : ''}
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md">
+                            ${item.clinica || 'Clínica N/I'}
+                        </span>
+                    </div>
+
+                    <!-- PACIENTE E EXAME -->
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-paw text-brand-peach text-xs"></i> ${item.nome || 'Paciente'} 
+                            <span class="text-[11px] font-normal text-slate-400">(${item.especie || 'Espécie'}${item.raca ? ' - ' + item.raca : ''})</span>
+                        </h3>
+                        <p class="text-xs text-brand-teal font-semibold mt-0.5 uppercase tracking-wide">${item.tipoExame || 'Exame Veterinário'}</p>
+                    </div>
+
+                    <!-- INFORMAÇÕES DE CONTATO DA CLINICA/TUTOR -->
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
+                        <div>
+                            <span class="text-slate-400 block text-[10px] font-semibold">TUTOR</span>
+                            <span class="font-medium text-slate-700 block">${item.tutor || '-'}</span>
+                            ${item.telefoneTutor ? `<a href="https://wa.me/55${item.telefoneTutor.replace(/\D/g,'')}" target="_blank" class="text-emerald-600 font-medium hover:underline inline-flex items-center gap-1 text-[11px] mt-0.5"><i class="fa-brands fa-whatsapp"></i> ${item.telefoneTutor}</a>` : ''}
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[10px] font-semibold">VETERINÁRIO</span>
+                            <span class="font-medium text-slate-700 block">${item.veterinario || '-'}</span>
+                            <span class="text-slate-400 text-[10px] block">CRMV: ${item.crmv || 'N/I'}</span>
+                        </div>
+                    </div>
+
+                    ${item.anotacoes ? `<div class="bg-slate-50 p-2.5 rounded-xl text-[11px] text-slate-600 border border-slate-200/60 mt-1"><strong>Obs:</strong> ${item.anotacoes}</div>` : ''}
+                </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
