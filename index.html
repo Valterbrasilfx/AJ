@@ -130,7 +130,7 @@
     <!-- MAIN CONTENT CONTAINER -->
     <main class="max-w-md mx-auto md:max-w-4xl px-4 pt-4 flex-1 w-full space-y-5">
 
-        <!-- MENU PRINCIPAL (GRID 2x2 DE ACESSO RÁPIDO) -->
+        <!-- MENU PRINCIPAL (GRID 3 COLUNAS EM TELA MAIOR OU AJUSTADO) -->
         <section>
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider">
@@ -201,10 +201,25 @@
                     </div>
                 </a>
 
+                <!-- BOTÃO 5: AGENDAMENTOS (ACRESCENTADO) -->
+                <a href="agendamentos.html" 
+                   class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95 col-span-2">
+                    <div class="flex items-center justify-between">
+                        <div class="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-calendar-check text-lg"></i>
+                        </div>
+                        <div class="text-indigo-200 group-hover:text-indigo-300 transition-colors mr-1">
+                            <i class="fa-solid fa-clock text-2xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-brand-teal transition-colors">Agendamentos</span>
+                        <span class="text-[11px] text-slate-500 line-clamp-1">Agenda de exames e compromissos marcados</span>
+                    </div>
+                </a>
+
             </div>
         </section>
-
-        
 
     </main>
 
@@ -235,10 +250,10 @@
                 <span class="text-[10px] mt-0.5">Pacientes</span>
             </a>
 
-            <!-- Financeiro -->
-            <a href="financeiro.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition group">
-                <i class="fa-solid fa-chart-line text-lg group-hover:scale-110 transition-transform"></i>
-                <span class="text-[10px] mt-0.5">Financeiro</span>
+            <!-- Agendamentos (Adicionado na Barra Inferior) -->
+            <a href="agendamentos.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition group">
+                <i class="fa-solid fa-calendar-check text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] mt-0.5">Agenda</span>
             </a>
 
         </div>
