@@ -239,28 +239,86 @@
                     <i class="fa-solid fa-notes-medical"></i> Detalhes do Exame
                 </h3>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tipo do Exame *</label>
-                    <select id="tipoExame" required class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal bg-white">
-                        <option value="">Selecione o Exame...</option>
-                        <option value="Ultrassom Abdominal Total">Ultrassom Abdominal Total</option>
-                        <option value="Ecocardiograma com Doppler">Ecocardiograma com Doppler</option>
-                        <option value="Raio-X Digital">Raio-X Digital</option>
-                        <option value="Eletrocardiograma (ECG)">Eletrocardiograma (ECG)</option>
-                        <option value="Hemograma Completo">Hemograma Completo</option>
-                        <option value="Perfil Bioquímico">Perfil Bioquímico</option>
-                    </select>
+                <!-- EXAME 1 (Principal) -->
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tipo do Exame 1 *</label>
+                        <select id="tipoExame" required class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal bg-white">
+                            <option value="">Selecione o Exame...</option>
+                            <option value="Ultrassom Abdominal Total">Ultrassom Abdominal Total</option>
+                            <option value="Ecocardiograma com Doppler">Ecocardiograma com Doppler</option>
+                            <option value="Raio-X Digital">Raio-X Digital</option>
+                            <option value="Eletrocardiograma (ECG)">Eletrocardiograma (ECG)</option>
+                            <option value="Hemograma Completo">Hemograma Completo</option>
+                            <option value="Perfil Bioquímico">Perfil Bioquímico</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Valor do Exame 1 (R$) *</label>
+                        <input type="text" id="valor" required placeholder="R$ 0,00" oninput="mascaraMoeda(this)" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal font-semibold text-slate-800 bg-white">
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <!-- EXAME 2 (Opcional) -->
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-2">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Data do Exame *</label>
-                        <input type="date" id="dataExame" required class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal bg-white">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tipo do Exame 2 (Opcional)</label>
+                        <select id="tipoExame2" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal bg-white">
+                            <option value="">Nenhum / Selecione...</option>
+                            <option value="Ultrassom Abdominal Total">Ultrassom Abdominal Total</option>
+                            <option value="Ecocardiograma com Doppler">Ecocardiograma com Doppler</option>
+                            <option value="Raio-X Digital">Raio-X Digital</option>
+                            <option value="Eletrocardiograma (ECG)">Eletrocardiograma (ECG)</option>
+                            <option value="Hemograma Completo">Hemograma Completo</option>
+                            <option value="Perfil Bioquímico">Perfil Bioquímico</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Valor (R$) *</label>
-                        <input type="text" id="valor" required placeholder="R$ 0,00" oninput="mascaraMoeda(this)" class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal font-semibold text-slate-800">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Valor do Exame 2 (R$)</label>
+                        <input type="text" id="valor2" placeholder="R$ 0,00" oninput="mascaraMoeda(this)" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal font-semibold text-slate-800 bg-white">
                     </div>
+                </div>
+
+                <!-- EXAME 3 (Opcional) -->
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tipo do Exame 3 (Opcional)</label>
+                        <select id="tipoExame3" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal bg-white">
+                            <option value="">Nenhum / Selecione...</option>
+                            <option value="Ultrassom Abdominal Total">Ultrassom Abdominal Total</option>
+                            <option value="Ecocardiograma com Doppler">Ecocardiograma com Doppler</option>
+                            <option value="Raio-X Digital">Raio-X Digital</option>
+                            <option value="Eletrocardiograma (ECG)">Eletrocardiograma (ECG)</option>
+                            <option value="Hemograma Completo">Hemograma Completo</option>
+                            <option value="Perfil Bioquímico">Perfil Bioquímico</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Valor do Exame 3 (R$)</label>
+                        <input type="text" id="valor3" placeholder="R$ 0,00" oninput="mascaraMoeda(this)" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal font-semibold text-slate-800 bg-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Data do Exame *</label>
+                    <input type="date" id="dataExame" required class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal bg-white">
+                </div>
+            </div>
+
+            <!-- ANOTAÇÕES & SUSPEITA CLÍNICA -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                <h3 class="text-xs font-bold text-brand-teal uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-pen"></i> Informações Clínicas
+                </h3>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Suspeita Clínica</label>
+                    <input type="text" id="suspeitaClinica" placeholder="Ex: Suspeita de piometra / Afecção cardíaca" class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Anotações</label>
+                    <textarea id="anotacoes" rows="3" placeholder="Observações gerais sobre o paciente ou o atendimento..." class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-brand-teal resize-none"></textarea>
                 </div>
             </div>
 
@@ -473,7 +531,14 @@
                 telefoneTutor: document.getElementById('telefoneTutor').value,
                 telefoneVet: document.getElementById('telefoneVet').value,
                 tipoExame: document.getElementById('tipoExame').value,
-                valor: document.getElementById('valor').value
+                valor: document.getElementById('valor').value,
+                statusPagamento: "Pendente",
+                tipoExame2: document.getElementById('tipoExame2').value,
+                valor2: document.getElementById('valor2').value,
+                tipoExame3: document.getElementById('tipoExame3').value,
+                valor3: document.getElementById('valor3').value,
+                anotacoes: document.getElementById('anotacoes').value,
+                suspeitaClinica: document.getElementById('suspeitaClinica').value
             };
 
             document.getElementById('loading').classList.remove('hidden');
