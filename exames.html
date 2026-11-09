@@ -58,7 +58,7 @@
         }
     </style>
 </head>
-<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-28 md:pb-20">
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col pb-10">
 
     <!-- HEADER TOP -->
     <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
@@ -76,16 +76,25 @@
         </div>
     </header>
 
-    <!-- BARRA DE BUSCA E FILTROS -->
-    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
+    <!-- BARRA DE BUSCA, FILTROS E SELETOR DE MÊS -->
+    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-3">
         
-        <div class="relative">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" id="input-busca" oninput="filtrarExames()" placeholder="Buscar por pet, tutor ou veterinário..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-teal shadow-sm">
+        <div class="flex gap-2">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" id="input-busca" oninput="aplicarFiltros()" placeholder="Buscar por pet, tutor ou veterinário..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-teal shadow-sm">
+            </div>
+            
+            <div class="relative w-40">
+                <select id="select-mes" onchange="aplicarFiltros()" class="w-full pl-3 pr-8 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-brand-teal shadow-sm appearance-none truncate">
+                    <option value="">Todos os meses</option>
+                </select>
+                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+            </div>
         </div>
 
         <!-- LISTA DE CARDS DE EXAMES -->
-        <div id="lista-exames" class="space-y-3">
+        <div id="lista-exames" class="space-y-4">
             <!-- Loading inicial -->
             <div class="text-center py-12 text-slate-400">
                 <div class="w-8 h-8 border-3 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
@@ -94,31 +103,6 @@
         </div>
 
     </main>
-
-    <!-- BOTTOM MOBILE NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/90 py-2 px-4 z-40 md:max-w-2xl md:mx-auto md:rounded-t-2xl md:shadow-lg">
-        <div class="flex justify-around items-center max-w-md mx-auto">
-            <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] mt-0.5">Início</span>
-            </a>
-            <a href="exames.html" class="flex flex-col items-center text-brand-teal font-bold transition">
-                <i class="fa-solid fa-notes-medical text-lg"></i>
-                <span class="text-[10px] mt-0.5">Exames</span>
-            </a>
-            <a href="cadastro_exame.html" class="w-12 h-12 rounded-full bg-brand-teal text-white flex items-center justify-center text-xl shadow-lg hover:bg-brand-tealDark transition -mt-5 ring-4 ring-slate-50">
-                <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="pacientes.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-paw text-lg"></i>
-                <span class="text-[10px] mt-0.5">Pacientes</span>
-            </a>
-            <a href="financeiro.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition">
-                <i class="fa-solid fa-chart-line text-lg"></i>
-                <span class="text-[10px] mt-0.5">Financeiro</span>
-            </a>
-        </div>
-    </nav>
 
     <!-- MODAL DE FICHA COMPLETA DO EXAME -->
     <div id="modal-detalhes" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
@@ -216,11 +200,10 @@
                 const res = await fetch(GOOGLE_APP_SCRIPT_URL);
                 const exames = await res.json();
                 
-                // Mapeamento limpo
                 todosExames = exames.reverse();
-                examesFiltrados = [...todosExames];
-
-                renderizarExames(examesFiltrados);
+                
+                popularOpcoesMeses();
+                aplicarFiltros();
             } catch (err) {
                 console.error("Erro ao carregar exames:", err);
                 container.innerHTML = `
@@ -230,6 +213,79 @@
                     </div>
                 `;
             }
+        }
+
+        function obterChaveMesAno(dataStr) {
+            if (!dataStr) return 'Sem Data';
+            let partes;
+            if (dataStr.includes('-')) {
+                partes = dataStr.split('T')[0].split('-');
+                if (partes.length === 3) {
+                    return `${partes[0]}-${partes[1]}`;
+                }
+            } else if (dataStr.includes('/')) {
+                partes = dataStr.split('/');
+                if (partes.length === 3) {
+                    return `${partes[2]}-${partes[1]}`;
+                }
+            }
+            return 'Outros';
+        }
+
+        function formatarNomeMes(chaveMesAno) {
+            if (chaveMesAno === 'Sem Data') return 'Outros / Sem Data';
+            if (chaveMesAno === 'Outros') return 'Outros';
+            
+            const [ano, mes] = chaveMesAno.split('-');
+            const meses = {
+                '01': 'Janeiro', '02': 'Fevereiro', '03': 'Março', '04': 'Abril',
+                '05': 'Maio', '06': 'Junho', '07': 'Julho', '08': 'Agosto',
+                '09': 'Setembro', '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
+            };
+            const nomeMes = meses[mes] || mes;
+            return `${nomeMes} de ${ano}`;
+        }
+
+        function popularOpcoesMeses() {
+            const selectMes = document.getElementById('select-mes');
+            const mesesDisponiveis = new Set();
+
+            todosExames.forEach(item => {
+                const chave = obterChaveMesAno(item.dataExame);
+                if (chave !== 'Sem Data' && chave !== 'Outros') {
+                    mesesDisponiveis.add(chave);
+                }
+            });
+
+            const chavesOrdenadas = Array.from(mesesDisponiveis).sort().reverse();
+
+            let optionsHtml = '<option value="">Todos os meses</option>';
+            chavesOrdenadas.forEach(chave => {
+                optionsHtml += `<option value="${chave}">${formatarNomeMes(chave)}</option>`;
+            });
+
+            selectMes.innerHTML = optionsHtml;
+        }
+
+        function aplicarFiltros() {
+            const termoBusca = document.getElementById('input-busca').value.toLowerCase();
+            const mesSelecionado = document.getElementById('select-mes').value;
+
+            examesFiltrados = todosExames.filter(item => {
+                const atendeBusca = (item.nome || '').toLowerCase().includes(termoBusca) ||
+                                    (item.tutor || '').toLowerCase().includes(termoBusca) ||
+                                    (item.veterinario || '').toLowerCase().includes(termoBusca) ||
+                                    (item.tipoExame || '').toLowerCase().includes(termoBusca) ||
+                                    (item.tipoExame2 || '').toLowerCase().includes(termoBusca) ||
+                                    (item.tipoExame3 || '').toLowerCase().includes(termoBusca);
+
+                const chaveMes = obterChaveMesAno(item.dataExame);
+                const atendeMes = !mesSelecionado || chaveMes === mesSelecionado;
+
+                return atendeBusca && atendeMes;
+            });
+
+            renderizarExames(examesFiltrados);
         }
 
         function renderizarExames(lista) {
@@ -245,81 +301,111 @@
                 return;
             }
 
-            container.innerHTML = lista.map((item, index) => {
-                const isPago = (item.statusPagamento || '').toString().trim().toUpperCase() === 'PAGO';
+            const grupos = {};
+            lista.forEach((item) => {
+                const indexGlobal = todosExames.indexOf(item);
+                const chaveMes = obterChaveMesAno(item.dataExame);
                 
-                const val1 = parseValor(item.valor);
-                const val2 = parseValor(item.valor2);
-                const val3 = parseValor(item.valor3);
-                const valorTotal = val1 + val2 + val3;
-
-                const badgeStatus = isPago ? `
-                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-                        <i class="fa-solid fa-circle-check text-[10px]"></i> PAGO
-                    </span>
-                ` : `
-                    <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-amber-200">
-                        <i class="fa-solid fa-clock text-[10px]"></i> PENDENTE
-                    </span>
-                `;
-
-                const fotoDirect = converterLinkDrive(item.foto);
-                const fotoHtml = fotoDirect ? `
-                    <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0">
-                        <img src="${fotoDirect}" alt="${escaparHtml(item.nome)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-sm\'><i class=\'fa-solid fa-paw\'></i></div>';">
-                    </div>
-                ` : `
-                    <div class="w-12 h-12 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-lg flex-shrink-0">
-                        <i class="fa-solid fa-paw"></i>
-                    </div>
-                `;
-
-                let examesRealizadosHtml = `<span class="text-brand-teal font-semibold">${escaparHtml(item.tipoExame) || 'Exame não especificado'}</span>`;
-                if (item.tipoExame2) {
-                    examesRealizadosHtml += `<br><span class="text-slate-600">${escaparHtml(item.tipoExame2)}</span>`;
+                if (!grupos[chaveMes]) {
+                    grupos[chaveMes] = [];
                 }
-                if (item.tipoExame3) {
-                    examesRealizadosHtml += `<br><span class="text-slate-600">${escaparHtml(item.tipoExame3)}</span>`;
-                }
+                grupos[chaveMes].push({ item, indexGlobal });
+            });
 
-                // Linha da planilha para acionar o update do status (ou índice alternativo)
-                const rowParaAtualizar = item.rowIndex ? item.rowIndex : (todosExames.length - index + 1);
+            const chavesOrdenadas = Object.keys(grupos).sort().reverse();
 
-                return `
-                    <div onclick="abrirModalPorIndice(${index})" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3 cursor-pointer hover:border-brand-teal/50 hover:shadow-md transition active:scale-[0.99]">
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="flex items-center gap-3">
-                                ${fotoHtml}
+            container.innerHTML = chavesOrdenadas.map(chave => {
+                const examesDoMes = grupos[chave];
+                const tituloMes = formatarNomeMes(chave);
+
+                const cardsHtml = examesDoMes.map(({ item, indexGlobal }) => {
+                    const isPago = (item.statusPagamento || '').toString().trim().toUpperCase() === 'PAGO';
+                    
+                    const val1 = parseValor(item.valor);
+                    const val2 = parseValor(item.valor2);
+                    const val3 = parseValor(item.valor3);
+                    const valorTotal = val1 + val2 + val3;
+
+                    const badgeStatus = isPago ? `
+                        <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+                            <i class="fa-solid fa-circle-check text-[10px]"></i> PAGO
+                        </span>
+                    ` : `
+                        <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-amber-200">
+                            <i class="fa-solid fa-clock text-[10px]"></i> PENDENTE
+                        </span>
+                    `;
+
+                    const fotoDirect = converterLinkDrive(item.foto);
+                    const fotoHtml = fotoDirect ? `
+                        <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0">
+                            <img src="${fotoDirect}" alt="${escaparHtml(item.nome)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-sm\'><i class=\'fa-solid fa-paw\'></i></div>';">
+                        </div>
+                    ` : `
+                        <div class="w-12 h-12 rounded-xl bg-brand-tealLight text-brand-teal flex items-center justify-center font-bold text-lg flex-shrink-0">
+                            <i class="fa-solid fa-paw"></i>
+                        </div>
+                    `;
+
+                    let examesRealizadosHtml = `<span class="text-brand-teal font-semibold">${escaparHtml(item.tipoExame) || 'Exame não especificado'}</span>`;
+                    if (item.tipoExame2) {
+                        examesRealizadosHtml += `<br><span class="text-slate-600">${escaparHtml(item.tipoExame2)}</span>`;
+                    }
+                    if (item.tipoExame3) {
+                        examesRealizadosHtml += `<br><span class="text-slate-600">${escaparHtml(item.tipoExame3)}</span>`;
+                    }
+
+                    const rowParaAtualizar = item.rowIndex ? item.rowIndex : (todosExames.length - indexGlobal + 1);
+
+                    return `
+                        <div onclick="abrirModalPorIndice(${indexGlobal})" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3 cursor-pointer hover:border-brand-teal/50 hover:shadow-md transition active:scale-[0.99]">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex items-center gap-3">
+                                    ${fotoHtml}
+                                    <div>
+                                        <h3 class="font-bold text-slate-800 text-sm leading-tight">${escaparHtml(item.nome) || 'Sem Nome'}</h3>
+                                        <div class="text-xs mt-0.5">${examesRealizadosHtml}</div>
+                                    </div>
+                                </div>
                                 <div>
-                                    <h3 class="font-bold text-slate-800 text-sm leading-tight">${escaparHtml(item.nome) || 'Sem Nome'}</h3>
-                                    <div class="text-xs mt-0.5">${examesRealizadosHtml}</div>
+                                    ${badgeStatus}
                                 </div>
                             </div>
-                            <div>
-                                ${badgeStatus}
+
+                            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
+                                <div>
+                                    <span class="text-slate-400 block text-[10px]">TUTOR</span>
+                                    <span class="font-semibold text-slate-700">${escaparHtml(item.tutor) || '-'}</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[10px]">VETERINÁRIO</span>
+                                    <span class="font-semibold text-slate-700">${escaparHtml(item.veterinario) || '-'}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold block">Valor Total</span>
+                                    <span class="text-sm font-extrabold text-slate-800">${formatarMoeda(valorTotal)}</span>
+                                </div>
+                                <button onclick="event.stopPropagation(); alternarStatusPagamento(${rowParaAtualizar}, '${isPago ? '' : 'PAGO'}')" class="text-xs font-semibold px-3 py-1.5 rounded-xl border ${isPago ? 'border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition flex items-center gap-1.5">
+                                    <i class="fa-solid ${isPago ? 'fa-rotate-left' : 'fa-check'}"></i>
+                                    <span>${isPago ? 'Marcar Pendente' : 'Marcar como Pago'}</span>
+                                </button>
                             </div>
                         </div>
+                    `;
+                }).join('');
 
-                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
-                            <div>
-                                <span class="text-slate-400 block text-[10px]">TUTOR</span>
-                                <span class="font-semibold text-slate-700">${escaparHtml(item.tutor) || '-'}</span>
-                            </div>
-                            <div>
-                                <span class="text-slate-400 block text-[10px]">VETERINÁRIO</span>
-                                <span class="font-semibold text-slate-700">${escaparHtml(item.veterinario) || '-'}</span>
-                            </div>
+                return `
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center gap-2 px-1">
+                            <div class="w-2.5 h-2.5 rounded-full bg-brand-teal"></div>
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">${tituloMes}</h3>
+                            <span class="text-[10px] bg-brand-tealLight text-brand-teal font-bold px-2 py-0.5 rounded-full">${examesDoMes.length}</span>
                         </div>
-
-                        <div class="flex items-center justify-between pt-1">
-                            <div>
-                                <span class="text-[10px] text-slate-400 uppercase font-bold block">Valor Total</span>
-                                <span class="text-sm font-extrabold text-slate-800">${formatarMoeda(valorTotal)}</span>
-                            </div>
-                            <button onclick="event.stopPropagation(); alternarStatusPagamento(${rowParaAtualizar}, '${isPago ? '' : 'PAGO'}')" class="text-xs font-semibold px-3 py-1.5 rounded-xl border ${isPago ? 'border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition flex items-center gap-1.5">
-                                <i class="fa-solid ${isPago ? 'fa-rotate-left' : 'fa-check'}"></i>
-                                <span>${isPago ? 'Marcar Pendente' : 'Marcar como Pago'}</span>
-                            </button>
+                        <div class="space-y-3">
+                            ${cardsHtml}
                         </div>
                     </div>
                 `;
@@ -327,7 +413,7 @@
         }
 
         function abrirModalPorIndice(index) {
-            const item = examesFiltrados[index];
+            const item = todosExames[index];
             if (!item) return;
 
             const isPago = (item.statusPagamento || '').toString().trim().toUpperCase() === 'PAGO';
@@ -342,7 +428,7 @@
             const fotoDirect = converterLinkDrive(item.foto);
             const fotoModal = fotoDirect ? `
                 <div class="relative w-full h-52 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 mb-3 shadow-inner flex items-center justify-center">
-                    <img src="${fotoDirect}" alt="${escaparHtml(item.nome)}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'flex flex-col items-center justify-center h-full text-xs text-slate-400 gap-2 p-4 text-center\'><i class=\'fa-solid fa-circle-exclamation text-amber-500 text-lg\'></i><span>Não foi possível carregar a imagem. Verifique se a pasta no Drive está compartilhada como pública ("Qualquer pessoa com o link").</span></div>';">
+                    <img src="${fotoDirect}" alt="${escaparHtml(item.nome)}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'flex flex-col items-center justify-center h-full text-xs text-slate-400 gap-2 p-4 text-center\'><i class=\'fa-solid fa-circle-exclamation text-amber-500 text-lg\'></i><span>Não foi possível carregar a imagem. Verifique se a pasta no Drive está compartilhada como pública (\"Qualquer pessoa com o link\").</span></div>';">
                     <a href="${item.foto}" target="_blank" class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 backdrop-blur-sm hover:bg-slate-900 transition shadow">
                         <i class="fa-solid fa-up-right-from-square"></i> Abrir Original
                     </a>
@@ -471,19 +557,6 @@
 
         function fecharModal() {
             document.getElementById('modal-detalhes').classList.add('opacity-0', 'pointer-events-none');
-        }
-
-        function filtrarExames() {
-            const termo = document.getElementById('input-busca').value.toLowerCase();
-            examesFiltrados = todosExames.filter(item => {
-                return (item.nome || '').toLowerCase().includes(termo) ||
-                       (item.tutor || '').toLowerCase().includes(termo) ||
-                       (item.veterinario || '').toLowerCase().includes(termo) ||
-                       (item.tipoExame || '').toLowerCase().includes(termo) ||
-                       (item.tipoExame2 || '').toLowerCase().includes(termo) ||
-                       (item.tipoExame3 || '').toLowerCase().includes(termo);
-            });
-            renderizarExames(examesFiltrados);
         }
 
         async function alternarStatusPagamento(rowIndex, novoStatus) {
