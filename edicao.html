@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Página em Construção - VetExames</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#1F5B5C',
+                            tealDark: '#153E3F',
+                            tealLight: '#E8F2F2',
+                            peach: '#F09B83',
+                            peachDark: '#D97E66',
+                            peachLight: '#FDF0EC',
+                            bg: '#FAF9F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-slate-800 antialiased h-full flex flex-col justify-between p-6">
+
+    <!-- CABEÇALHO SIMPLES -->
+    <header class="w-full max-w-md mx-auto flex justify-center py-4">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-tealLight flex items-center justify-center p-1 border border-brand-teal/10 shadow-sm">
+                <i class="fa-solid fa-paw text-brand-teal text-lg"></i>
+            </div>
+            <h1 class="font-bold text-lg text-slate-800">VetExames</h1>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL CENTRALIZADO -->
+    <main class="w-full max-w-md mx-auto flex-1 flex flex-col items-center justify-center text-center my-auto space-y-6">
+        
+        <!-- Ícone Animado / Destaque -->
+        <div class="relative">
+            <div class="w-24 h-24 rounded-3xl bg-brand-tealLight text-brand-teal flex items-center justify-center text-4xl shadow-inner mx-auto animate-bounce">
+                <i class="fa-solid fa-person-digging"></i>
+            </div>
+            <span class="absolute -bottom-2 -right-2 w-9 h-9 bg-brand-peach text-white rounded-full flex items-center justify-center text-sm shadow-md ring-4 ring-brand-bg">
+                <i class="fa-solid fa-gear animate-spin"></i>
+            </span>
+        </div>
+
+        <!-- Títulos -->
+        <div class="space-y-2">
+            <span class="inline-block bg-brand-teal/10 text-brand-teal text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                Em Desenvolvimento
+            </span>
+            <h2 class="text-2xl font-bold text-slate-800">
+                Estamos construindo algo incrível!
+            </h2>
+            <p class="text-sm text-slate-500 max-w-xs mx-auto">
+                Esta página está sendo preparada com muito carinho para trazer novas funcionalidades para o seu dia a dia.
+            </p>
+        </div>
+
+        <!-- AVISO / CADASTRO DE E-MAIL (OPCIONAL) -->
+        <div class="w-full bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
+            <p class="text-xs font-medium text-slate-600">
+                Deseja ser avisado quando estiver pronto?
+            </p>
+            <form onsubmit="event.preventDefault(); notificar('E-mail cadastrado com sucesso!');" class="flex gap-2">
+                <input type="email" placeholder="Seu e-mail profissional" required class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-teal">
+                <button type="submit" class="bg-brand-teal hover:bg-brand-tealDark text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm">
+                    Avisar
+                </button>
+            </form>
+        </div>
+
+        <!-- BOTÃO DE VOLTAR -->
+        <div>
+            <a href="index.html" class="inline-flex items-center gap-2 text-xs font-bold text-brand-teal hover:text-brand-tealDark transition bg-white px-4 py-2.5 rounded-xl border border-brand-teal/20 shadow-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar para o Início
+            </a>
+        </div>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="w-full max-w-md mx-auto text-center py-4 text-xs text-slate-400">
+        &copy; 2026 VetExames. Todos os direitos reservados.
+    </footer>
+
+    <!-- TOAST / MENSAGEM FLUTUANTE -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-brand-peach"></i>
+        <span id="toast-msg">Mensagem</span>
+    </div>
+
+    <!-- SCRIPT DO TOAST -->
+    <script>
+        function notificar(mensagem) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = mensagem;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
