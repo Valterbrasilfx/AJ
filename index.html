@@ -130,7 +130,7 @@
     <!-- MAIN CONTENT CONTAINER -->
     <main class="max-w-md mx-auto md:max-w-4xl px-4 pt-4 flex-1 w-full space-y-5">
 
-        <!-- MENU PRINCIPAL (GRID 3 COLUNAS EM TELA MAIOR OU AJUSTADO) -->
+        <!-- MENU PRINCIPAL -->
         <section>
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider">
@@ -171,6 +171,21 @@
                     </div>
                 </a>
 
+                <!-- BOTÃO NOVO: EDITAR EXAME -->
+                <a href="edicao.html" 
+                   class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95">
+                    <div class="w-11 h-11 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-pen-to-square text-lg"></i>
+                    </div>
+                    <div class="absolute top-3 right-3 text-amber-100 group-hover:text-amber-200 transition-colors">
+                        <i class="fa-solid fa-file-pen text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-brand-teal transition-colors">Editar Exame</span>
+                        <span class="text-[11px] text-slate-500 line-clamp-1">Atualizar laudos e dados</span>
+                    </div>
+                </a>
+
                 <!-- BOTÃO 3: PACIENTES -->
                 <a href="pacientes.html" 
                    class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95">
@@ -201,7 +216,7 @@
                     </div>
                 </a>
 
-                <!-- BOTÃO 5: AGENDAMENTOS (ACRESCENTADO) -->
+                <!-- BOTÃO 5: AGENDAMENTOS -->
                 <a href="agendamentos.html" 
                    class="group bg-white hover:bg-brand-tealLight/40 p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:border-brand-teal/40 transition-all duration-200 text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95 col-span-2">
                     <div class="flex items-center justify-between">
@@ -250,7 +265,7 @@
                 <span class="text-[10px] mt-0.5">Pacientes</span>
             </a>
 
-            <!-- Agendamentos (Adicionado na Barra Inferior) -->
+            <!-- Agendamentos -->
             <a href="agendamentos.html" class="flex flex-col items-center text-slate-400 hover:text-brand-teal transition group">
                 <i class="fa-solid fa-calendar-check text-lg group-hover:scale-110 transition-transform"></i>
                 <span class="text-[10px] mt-0.5">Agenda</span>
