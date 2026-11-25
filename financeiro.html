@@ -37,11 +37,64 @@
             }
         }
     </script>
+
+    <style>
+        /* Estilos exclusivos para impressão / salvar como PDF com múltiplas páginas */
+        @media print {
+            html, body {
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+            body > *:not(#modal-relatorios) {
+                display: none !important;
+            }
+            #modal-relatorios {
+                position: static !important;
+                display: block !important;
+                inset: auto !important;
+                width: 100% !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #modal-relatorios > div {
+                max-width: 100% !important;
+                max-height: none !important;
+                height: auto !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+            #modal-relatorios .overflow-y-auto {
+                max-height: none !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            #area-impressao-relatorio,
+            #area-impressao-relatorio * {
+                overflow: visible !important;
+                max-height: none !important;
+            }
+            .item-relatorio-print {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-brand-bg text-slate-800 antialiased min-h-full flex flex-col pb-12">
 
     <!-- HEADER SUPERIOR -->
-    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm no-print">
         <div class="max-w-md mx-auto md:max-w-2xl px-4 py-3 flex items-center justify-between">
             <a href="index.html" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
                 <i class="fa-solid fa-arrow-left"></i>
@@ -56,8 +109,14 @@
         </div>
     </header>
 
-    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4">
+    <main class="max-w-md mx-auto md:max-w-2xl px-4 pt-4 flex-1 w-full space-y-4 no-print">
         
+        <!-- BOTÃO DE AÇÃO RÁPIDA: GERAR RELATÓRIOS -->
+        <button type="button" onclick="abrirModalRelatorios()" class="w-full py-3 px-4 rounded-2xl bg-brand-teal hover:bg-brand-tealDark text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all active:scale-[0.99]">
+            <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
+            <span>Gerar Relatórios Personalizados e Saldo Devedor</span>
+        </button>
+
         <!-- SEGMENTED CONTROL / BOTÕES DE ALTERNÂNCIA DE VISÃO -->
         <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-3">
             <div class="flex items-center justify-between gap-2">
@@ -110,9 +169,12 @@
 
         <!-- RESUMO POR CLÍNICA -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
-            <h3 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-hospital text-brand-teal"></i> Faturamento por Clínica
-            </h3>
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-hospital text-brand-teal"></i> Faturamento por Clínica
+                </h3>
+                <span class="text-[10px] text-slate-400 font-medium">Toque para detalhar</span>
+            </div>
             <div id="resumo-clinicas" class="space-y-2 text-xs">
                 <p class="text-slate-400 text-center py-3">Carregando clínicas...</p>
             </div>
@@ -120,9 +182,12 @@
 
         <!-- RESUMO POR TIPO DE EXAME -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
-            <h3 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-chart-pie text-brand-teal"></i> Por Tipo de Exame
-            </h3>
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie text-brand-teal"></i> Por Tipo de Exame
+                </h3>
+                <span class="text-[10px] text-slate-400 font-medium">Toque para detalhar</span>
+            </div>
             <div id="resumo-tipos" class="space-y-2 text-xs">
                 <p class="text-slate-400 text-center py-3">Carregando exames...</p>
             </div>
@@ -130,11 +195,177 @@
 
     </main>
 
+    <!-- MODAL DE GERAÇÃO DE RELATÓRIOS -->
+    <div id="modal-relatorios" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-end md:items-center justify-center p-0 md:p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
+            
+            <!-- Cabeçalho do Modal -->
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 no-print">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-sm text-slate-800">Gerador de Relatórios</h2>
+                        <p class="text-[11px] text-slate-500">Filtre por empresa, exames, período ou saldo devedor</p>
+                    </div>
+                </div>
+                <button type="button" onclick="fecharModalRelatorios()" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Corpo do Modal (Scrollável) -->
+            <div class="p-5 overflow-y-auto space-y-4 flex-1 text-xs">
+                
+                <!-- Seletor de Modo de Relatório -->
+                <div class="space-y-1.5 no-print">
+                    <label class="font-bold text-slate-700 uppercase tracking-wider text-[10px] block">Tipo de Relatório</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="btn-modo-geral" onclick="setModoRelatorio('geral')" class="p-2.5 rounded-xl border-2 border-brand-teal bg-brand-tealLight/50 text-brand-teal font-bold text-left flex items-center gap-2 transition">
+                            <i class="fa-solid fa-filter"></i>
+                            <span>Relatório Filtrado</span>
+                        </button>
+                        <button type="button" id="btn-modo-devedor" onclick="setModoRelatorio('devedor')" class="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold text-left flex items-center gap-2 hover:bg-slate-50 transition">
+                            <i class="fa-solid fa-hand-holding-dollar text-amber-600"></i>
+                            <span>Saldo Devedor por Clínica</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 no-print">
+                    
+                    <!-- Filtro Clínica -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <label class="font-bold text-slate-700">Clínica / Empresa</label>
+                            <button type="button" onclick="limparSelecaoMultipla('filtro-clinica')" class="text-[10px] text-brand-teal font-semibold hover:underline">Todas</button>
+                        </div>
+                        <select id="filtro-clinica" multiple class="w-full h-24 p-2 rounded-xl border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-brand-teal">
+                            <!-- Preenchido via JS -->
+                        </select>
+                        <p class="text-[10px] text-slate-400">Segure Ctrl/Cmd ou toque para selecionar várias (vazio = todas).</p>
+                    </div>
+
+                    <!-- Filtro Tipo de Exame -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <label class="font-bold text-slate-700">Tipo de Exame</label>
+                            <button type="button" onclick="limparSelecaoMultipla('filtro-exame')" class="text-[10px] text-brand-teal font-semibold hover:underline">Todos</button>
+                        </div>
+                        <select id="filtro-exame" multiple class="w-full h-24 p-2 rounded-xl border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-brand-teal">
+                            <!-- Preenchido via JS -->
+                        </select>
+                        <p class="text-[10px] text-slate-400">Deixe sem seleção para incluir todos os exames.</p>
+                    </div>
+
+                    <!-- Filtro Anos -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <label class="font-bold text-slate-700">Ano(s)</label>
+                            <button type="button" onclick="limparSelecaoMultipla('filtro-ano')" class="text-[10px] text-brand-teal font-semibold hover:underline">Todos</button>
+                        </div>
+                        <select id="filtro-ano" multiple class="w-full h-20 p-2 rounded-xl border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-brand-teal">
+                            <!-- Preenchido via JS -->
+                        </select>
+                    </div>
+
+                    <!-- Filtro Meses -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <label class="font-bold text-slate-700">Mês(es)</label>
+                            <button type="button" onclick="limparSelecaoMultipla('filtro-mes')" class="text-[10px] text-brand-teal font-semibold hover:underline">Todos</button>
+                        </div>
+                        <select id="filtro-mes" multiple class="w-full h-20 p-2 rounded-xl border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-brand-teal">
+                            <option value="01">Janeiro</option>
+                            <option value="02">Fevereiro</option>
+                            <option value="03">Março</option>
+                            <option value="04">Abril</option>
+                            <option value="05">Maio</option>
+                            <option value="06">Junho</option>
+                            <option value="07">Julho</option>
+                            <option value="08">Agosto</option>
+                            <option value="09">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro Status (ocultado automaticamente no modo Saldo Devedor) -->
+                    <div id="box-filtro-status" class="md:col-span-2 space-y-1 pt-1">
+                        <label class="font-bold text-slate-700">Tipo de Valores</label>
+                        <select id="filtro-status" class="w-full p-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold focus:outline-none focus:border-brand-teal">
+                            <option value="TODOS">Valores Totais (Pagos e a Pagar)</option>
+                            <option value="PENDENTE">Valores a Pagar (Pendentes)</option>
+                            <option value="PAGO">Valores Pagos (Recebidos)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Botão Executar Geração -->
+                <button type="button" onclick="gerarRelatorioCustomizado()" class="w-full py-3 rounded-xl bg-brand-teal hover:bg-brand-tealDark text-white font-bold shadow-sm flex items-center justify-center gap-2 transition no-print">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    <span>Atualizar / Gerar Relatório</span>
+                </button>
+
+                <!-- RESULTADO DO RELATÓRIO (ÁREA IMPRIMÍVEL) -->
+                <div id="area-impressao-relatorio" class="space-y-4 pt-2">
+                    <!-- Cabeçalho Profissional para Relatório / PDF -->
+                    <div class="border-b-2 border-brand-teal pb-3 flex items-center justify-between gap-2 item-relatorio-print">
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900 tracking-tight">Dra. Ana Júlia Teixeira | Médica Veterinária</h3>
+                            <p class="text-[10px] text-slate-500">VetExames — Diagnóstico por Imagem e Exames Veterinários</p>
+                        </div>
+                        <div class="text-right text-[10px] text-slate-500">
+                            <span id="data-emissao-relatorio"></span>
+                        </div>
+                    </div>
+
+                    <div id="resultado-relatorio" class="space-y-4">
+                        <p class="text-slate-400 text-center py-6">Selecione os filtros acima e clique em <strong>Gerar Relatório</strong>.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Rodapé do Modal com Ações de Exportação -->
+            <div class="px-5 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-2 no-print">
+                <button type="button" onclick="copiarRelatorioTexto()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-regular fa-copy"></i>
+                    <span>Copiar Texto (WhatsApp)</span>
+                </button>
+                <button type="button" onclick="window.print()" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Imprimir / Salvar PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaOy6vRmz_rU6OYTJ46YrPsq4-NpPQ_sromqDMA7jKZWpij1lkiSc5jQGvDr6G20k/exec";
 
         let cacheExames = [];
         let visaoAtual = 'mensal'; // Default: 'mensal' ou 'anual'
+        let modoRelatorio = 'geral'; // 'geral' ou 'devedor'
+        let ultimoTextoRelatorio = '';
+
+        const NOMES_MESES = {
+            '01': 'Janeiro',
+            '02': 'Fevereiro',
+            '03': 'Março',
+            '04': 'Abril',
+            '05': 'Maio',
+            '06': 'Junho',
+            '07': 'Julho',
+            '08': 'Agosto',
+            '09': 'Setembro',
+            '10': 'Outubro',
+            '11': 'Novembro',
+            '12': 'Dezembro'
+        };
 
         // Limpa e converte strings monetárias/números para float
         function limparValor(val) {
@@ -153,6 +384,62 @@
         // Formata número em Moeda Real (BRL)
         function formatarMoeda(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Formata data YYYY-MM-DD para DD/MM/YYYY
+        function formatarDataBR(dataStr) {
+            if (!dataStr) return '-';
+            const partes = dataStr.split('T')[0].split('-');
+            if (partes.length === 3) return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            return dataStr;
+        }
+
+        // Extrai nome do paciente da coluna B (NOME) em qualquer variação de chave ou array
+        function obterNomePaciente(item) {
+            if (Array.isArray(item)) {
+                const colB = item[1];
+                if (colB !== undefined && colB !== null && colB.toString().trim() !== '') {
+                    return colB.toString().trim();
+                }
+            }
+
+            if (item && typeof item === 'object') {
+                // Busca case-insensitive por 'nome'
+                for (const chave of Object.keys(item)) {
+                    const chaveLimpa = chave.toString().trim().toLowerCase();
+                    if (chaveLimpa === 'nome' || chaveLimpa === 'nome_paciente' || chaveLimpa === 'nomepaciente' || chaveLimpa === 'paciente' || chaveLimpa === 'nomeanimal' || chaveLimpa === 'animal') {
+                        const valor = item[chave];
+                        if (valor !== undefined && valor !== null && valor.toString().trim() !== '') {
+                            return valor.toString().trim();
+                        }
+                    }
+                }
+            }
+
+            return 'Paciente não informado';
+        }
+
+        // Extrai nome do tutor se existir
+        function obterNomeTutor(item) {
+            if (!item || typeof item !== 'object') return '';
+            const candidatos = [item.nomeTutor, item.tutor, item.proprietario, item.TUTOR];
+            for (const c of candidatos) {
+                if (c !== undefined && c !== null && c.toString().trim() !== '') {
+                    return c.toString().trim();
+                }
+            }
+            return '';
+        }
+
+        // Alterna exibição do detalhe (Pago / Pendente) ao clicar na Clínica ou Exame
+        function toggleDetalheItem(idDetalhe, idIcone) {
+            const el = document.getElementById(idDetalhe);
+            const icon = document.getElementById(idIcone);
+            if (!el) return;
+            el.classList.toggle('hidden');
+            if (icon) {
+                icon.classList.toggle('rotate-180');
+            }
         }
 
         // Popula as opções do seletor dos últimos 6 meses
@@ -200,10 +487,17 @@
         // Inicialização
         window.addEventListener('DOMContentLoaded', async () => {
             gerarUltimosMeses();
+            const agora = new Date();
+            const elDataEmissao = document.getElementById('data-emissao-relatorio');
+            if (elDataEmissao) {
+                elDataEmissao.textContent = `Emitido em ${agora.toLocaleDateString('pt-BR')}`;
+            }
+
             try {
                 const res = await fetch(GOOGLE_APP_SCRIPT_URL);
                 cacheExames = await res.json();
                 processarDashboard();
+                popularFiltrosRelatorio();
             } catch (err) {
                 console.error("Erro ao carregar dados financeiros:", err);
                 document.getElementById('resumo-clinicas').innerHTML = '<p class="text-rose-500 text-center py-2 font-medium">Falha ao carregar dados.</p>';
@@ -222,7 +516,6 @@
             const porTipo = {};
             const porClinica = {};
 
-            // Atualiza o rótulo do card principal
             document.getElementById('lbl-total').innerText = visaoAtual === 'anual' 
                 ? `Faturamento Total de ${anoAtual} (Ano)` 
                 : 'Faturamento Total do Mês';
@@ -230,7 +523,6 @@
             cacheExames.forEach(item => {
                 const dataExame = (item.dataExame || '').toString().trim();
 
-                // Filtragem por visão selecionada
                 if (visaoAtual === 'anual') {
                     if (!dataExame.startsWith(anoAtual)) return;
                 } else {
@@ -243,18 +535,21 @@
                 const valorAtendimento = v1 + v2 + v3;
 
                 const status = (item.statusPagamento || '').toString().trim().toUpperCase();
+                const isPago = status === 'PAGO';
                 const clinica = (item.clinica || 'Particular / Sem Clínica').trim();
 
                 total += valorAtendimento;
-                if (status === 'PAGO') pago += valorAtendimento;
+                if (isPago) pago += valorAtendimento;
                 else pendente += valorAtendimento;
 
-                // Agrupamento por Clínica
-                if (!porClinica[clinica]) porClinica[clinica] = { qtd: 0, valor: 0 };
+                if (!porClinica[clinica]) {
+                    porClinica[clinica] = { qtd: 0, valor: 0, pago: 0, pendente: 0 };
+                }
                 porClinica[clinica].qtd++;
                 porClinica[clinica].valor += valorAtendimento;
+                if (isPago) porClinica[clinica].pago += valorAtendimento;
+                else porClinica[clinica].pendente += valorAtendimento;
 
-                // Agrupamento por Tipo de Exame
                 const tiposDesteAtendimento = [item.tipoExame, item.tipoExame2, item.tipoExame3];
                 tiposDesteAtendimento.forEach((t, idx) => {
                     if (t && t.trim() !== "") {
@@ -262,51 +557,445 @@
                         let valExame = idx === 0 ? v1 : (idx === 1 ? v2 : v3);
                         if (valExame === 0 && valorAtendimento > 0 && idx === 0) valExame = valorAtendimento;
 
-                        if (!porTipo[nomeTipo]) porTipo[nomeTipo] = { qtd: 0, valor: 0 };
+                        if (!porTipo[nomeTipo]) {
+                            porTipo[nomeTipo] = { qtd: 0, valor: 0, pago: 0, pendente: 0 };
+                        }
                         porTipo[nomeTipo].qtd++;
                         porTipo[nomeTipo].valor += valExame;
+                        if (isPago) porTipo[nomeTipo].pago += valExame;
+                        else porTipo[nomeTipo].pendente += valExame;
                     }
                 });
             });
 
-            // Atualiza os Cards de Valores
             document.getElementById('txt-total').innerText = formatarMoeda(total);
             document.getElementById('txt-pago').innerText = formatarMoeda(pago);
             document.getElementById('txt-pendente').innerText = formatarMoeda(pendente);
 
-            // Renderiza Lista por Clínica
             const containerClinicas = document.getElementById('resumo-clinicas');
-            const clinicasArr = Object.entries(porClinica);
+            const clinicasArr = Object.entries(porClinica).sort((a, b) => b[1].valor - a[1].valor);
             if (!clinicasArr.length) {
                 containerClinicas.innerHTML = `<p class="text-slate-400 text-center py-2">Nenhum registro encontrado para a visão ${visaoAtual}.</p>`;
             } else {
-                containerClinicas.innerHTML = clinicasArr.map(([nome, d]) => `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
-                        <div>
-                            <span class="font-bold text-slate-800 block">${nome}</span>
-                            <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'atendimento' : 'atendimentos'}</span>
+                containerClinicas.innerHTML = clinicasArr.map(([nome, d], idx) => `
+                    <div class="rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-300 transition-colors overflow-hidden">
+                        <button type="button" onclick="toggleDetalheItem('det-clinica-${idx}', 'ico-clinica-${idx}')" class="w-full flex items-center justify-between p-2.5 text-left">
+                            <div>
+                                <span class="font-bold text-slate-800 block">${nome}</span>
+                                <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'atendimento' : 'atendimentos'}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-slate-700">${formatarMoeda(d.valor)}</span>
+                                <i id="ico-clinica-${idx}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+                            </div>
+                        </button>
+                        <div id="det-clinica-${idx}" class="hidden px-2.5 pb-2.5 pt-1.5 border-t border-slate-200/70 bg-white grid grid-cols-2 gap-2">
+                            <div class="p-2 rounded-lg bg-emerald-50/80 border border-emerald-200/60">
+                                <span class="text-[9px] font-bold uppercase text-emerald-600 block">Já Recebido (Pago)</span>
+                                <span class="font-extrabold text-emerald-800 text-xs">${formatarMoeda(d.pago)}</span>
+                            </div>
+                            <div class="p-2 rounded-lg bg-amber-50/80 border border-amber-200/60">
+                                <span class="text-[9px] font-bold uppercase text-amber-600 block">Falta Receber</span>
+                                <span class="font-extrabold text-amber-800 text-xs">${formatarMoeda(d.pendente)}</span>
+                            </div>
                         </div>
-                        <span class="font-extrabold text-slate-700">${formatarMoeda(d.valor)}</span>
                     </div>
                 `).join('');
             }
 
-            // Renderiza Lista por Tipo de Exame
             const containerTipos = document.getElementById('resumo-tipos');
-            const tiposArr = Object.entries(porTipo);
+            const tiposArr = Object.entries(porTipo).sort((a, b) => b[1].valor - a[1].valor);
             if (!tiposArr.length) {
                 containerTipos.innerHTML = `<p class="text-slate-400 text-center py-2">Nenhum exame encontrado para a visão ${visaoAtual}.</p>`;
             } else {
-                containerTipos.innerHTML = tiposArr.map(([nome, d]) => `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
-                        <div>
-                            <span class="font-bold text-slate-800 block">${nome}</span>
-                            <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'realizado' : 'realizados'}</span>
+                containerTipos.innerHTML = tiposArr.map(([nome, d], idx) => `
+                    <div class="rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-300 transition-colors overflow-hidden">
+                        <button type="button" onclick="toggleDetalheItem('det-tipo-${idx}', 'ico-tipo-${idx}')" class="w-full flex items-center justify-between p-2.5 text-left">
+                            <div>
+                                <span class="font-bold text-slate-800 block">${nome}</span>
+                                <span class="text-[10px] text-slate-400">${d.qtd} ${d.qtd === 1 ? 'realizado' : 'realizados'}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-slate-700">${formatarMoeda(d.valor)}</span>
+                                <i id="ico-tipo-${idx}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+                            </div>
+                        </button>
+                        <div id="det-tipo-${idx}" class="hidden px-2.5 pb-2.5 pt-1.5 border-t border-slate-200/70 bg-white grid grid-cols-2 gap-2">
+                            <div class="p-2 rounded-lg bg-emerald-50/80 border border-emerald-200/60">
+                                <span class="text-[9px] font-bold uppercase text-emerald-600 block">Já Recebido (Pago)</span>
+                                <span class="font-extrabold text-emerald-800 text-xs">${formatarMoeda(d.pago)}</span>
+                            </div>
+                            <div class="p-2 rounded-lg bg-amber-50/80 border border-amber-200/60">
+                                <span class="text-[9px] font-bold uppercase text-amber-600 block">Falta Receber</span>
+                                <span class="font-extrabold text-amber-800 text-xs">${formatarMoeda(d.pendente)}</span>
+                            </div>
                         </div>
-                        <span class="font-extrabold text-slate-700">${formatarMoeda(d.valor)}</span>
                     </div>
                 `).join('');
             }
+        }
+
+        // =========================================================================
+        // FUNÇÕES DO GERADOR DE RELATÓRIOS
+        // =========================================================================
+
+        function popularFiltrosRelatorio() {
+            const setClinicas = new Set();
+            const setExames = new Set();
+            const setAnos = new Set();
+
+            cacheExames.forEach(item => {
+                const clinica = (item.clinica || 'Particular / Sem Clínica').trim();
+                setClinicas.add(clinica);
+
+                [item.tipoExame, item.tipoExame2, item.tipoExame3].forEach(t => {
+                    if (t && t.trim() !== '') setExames.add(t.trim());
+                });
+
+                const dataExame = (item.dataExame || '').toString().trim();
+                if (dataExame.length >= 4) {
+                    const ano = dataExame.substring(0, 4);
+                    if (/^\d{4}$/.test(ano)) setAnos.add(ano);
+                }
+            });
+
+            const selClinica = document.getElementById('filtro-clinica');
+            selClinica.innerHTML = Array.from(setClinicas).sort().map(c => `<option value="${c}">${c}</option>`).join('');
+
+            const selExame = document.getElementById('filtro-exame');
+            selExame.innerHTML = Array.from(setExames).sort().map(e => `<option value="${e}">${e}</option>`).join('');
+
+            const selAno = document.getElementById('filtro-ano');
+            const anosOrdenados = Array.from(setAnos).sort((a, b) => b.localeCompare(a));
+            selAno.innerHTML = anosOrdenados.map(a => `<option value="${a}">${a}</option>`).join('');
+        }
+
+        function abrirModalRelatorios() {
+            document.getElementById('modal-relatorios').classList.remove('hidden');
+            gerarRelatorioCustomizado();
+        }
+
+        function fecharModalRelatorios() {
+            document.getElementById('modal-relatorios').classList.add('hidden');
+        }
+
+        function limparSelecaoMultipla(selectId) {
+            const select = document.getElementById(selectId);
+            Array.from(select.options).forEach(opt => opt.selected = false);
+        }
+
+        function getValoresSelecionados(selectId) {
+            const select = document.getElementById(selectId);
+            return Array.from(select.selectedOptions).map(opt => opt.value);
+        }
+
+        function setModoRelatorio(modo) {
+            modoRelatorio = modo;
+            const btnGeral = document.getElementById('btn-modo-geral');
+            const btnDevedor = document.getElementById('btn-modo-devedor');
+            const boxStatus = document.getElementById('box-filtro-status');
+
+            if (modo === 'geral') {
+                btnGeral.className = "p-2.5 rounded-xl border-2 border-brand-teal bg-brand-tealLight/50 text-brand-teal font-bold text-left flex items-center gap-2 transition";
+                btnDevedor.className = "p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold text-left flex items-center gap-2 hover:bg-slate-50 transition";
+                boxStatus.classList.remove('hidden');
+            } else {
+                btnDevedor.className = "p-2.5 rounded-xl border-2 border-amber-500 bg-amber-50 text-amber-800 font-bold text-left flex items-center gap-2 transition";
+                btnGeral.className = "p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold text-left flex items-center gap-2 hover:bg-slate-50 transition";
+                boxStatus.classList.add('hidden');
+            }
+            gerarRelatorioCustomizado();
+        }
+
+        function montarTituloRelatorio(anosSel, mesesSel, statusSel) {
+            let periodoTexto = 'Período Geral';
+            if (mesesSel.length > 0) {
+                const nomesM = mesesSel.map(m => NOMES_MESES[m] || m);
+                if (anosSel.length > 0) {
+                    periodoTexto = `${nomesM.join(', ')} / ${anosSel.join(', ')}`;
+                } else {
+                    periodoTexto = nomesM.join(', ');
+                }
+            } else if (anosSel.length > 0) {
+                periodoTexto = `Ano ${anosSel.join(', ')}`;
+            }
+
+            let tipoValorTexto = '(Valores Totais)';
+            if (modoRelatorio === 'devedor' || statusSel === 'PENDENTE') {
+                tipoValorTexto = '(Valores a Pagar)';
+            } else if (statusSel === 'PAGO') {
+                tipoValorTexto = '(Valores Pagos)';
+            }
+
+            const prefixo = modoRelatorio === 'devedor'
+                ? 'Saldo Devedor por Clínica'
+                : 'Relatório';
+
+            return `${prefixo} - ${periodoTexto} ${tipoValorTexto}`;
+        }
+
+        function gerarRelatorioCustomizado() {
+            const clinicasSel = getValoresSelecionados('filtro-clinica');
+            const examesSel = getValoresSelecionados('filtro-exame');
+            const anosSel = getValoresSelecionados('filtro-ano');
+            const mesesSel = getValoresSelecionados('filtro-mes');
+            const statusSel = modoRelatorio === 'devedor' ? 'PENDENTE' : document.getElementById('filtro-status').value;
+
+            let totalGeral = 0;
+            let totalPago = 0;
+            let totalPendente = 0;
+            const registrosFiltrados = [];
+            const saldoPorClinica = {};
+
+            cacheExames.forEach(item => {
+                const dataExame = (item.dataExame || '').toString().trim();
+                const anoItem = dataExame.substring(0, 4);
+                const mesItem = dataExame.substring(5, 7);
+
+                if (anosSel.length > 0 && !anosSel.includes(anoItem)) return;
+                if (mesesSel.length > 0 && !mesesSel.includes(mesItem)) return;
+
+                const clinica = (item.clinica || 'Particular / Sem Clínica').trim();
+                if (clinicasSel.length > 0 && !clinicasSel.includes(clinica)) return;
+
+                const status = (item.statusPagamento || '').toString().trim().toUpperCase();
+                const isPago = status === 'PAGO';
+                if (statusSel === 'PAGO' && !isPago) return;
+                if (statusSel === 'PENDENTE' && isPago) return;
+
+                const v1 = limparValor(item.valor);
+                const v2 = limparValor(item.valor2);
+                const v3 = limparValor(item.valor3);
+                const valorAtendimentoTotal = v1 + v2 + v3;
+
+                const listaExamesItem = [
+                    { nome: (item.tipoExame || '').trim(), val: v1 },
+                    { nome: (item.tipoExame2 || '').trim(), val: v2 },
+                    { nome: (item.tipoExame3 || '').trim(), val: v3 }
+                ].filter(e => e.nome !== '');
+
+                if (listaExamesItem.length > 0 && listaExamesItem[0].val === 0 && valorAtendimentoTotal > 0) {
+                    listaExamesItem[0].val = valorAtendimentoTotal;
+                }
+
+                let valorConsiderado = 0;
+                let examesConsiderados = [];
+
+                if (examesSel.length > 0) {
+                    const correspondentes = listaExamesItem.filter(e => examesSel.includes(e.nome));
+                    if (correspondentes.length === 0) return;
+                    valorConsiderado = correspondentes.reduce((acc, cur) => acc + cur.val, 0);
+                    examesConsiderados = correspondentes.map(c => c.nome);
+                } else {
+                    valorConsiderado = valorAtendimentoTotal;
+                    examesConsiderados = listaExamesItem.map(c => c.nome);
+                }
+
+                totalGeral += valorConsiderado;
+                if (isPago) totalPago += valorConsiderado;
+                else totalPendente += valorConsiderado;
+
+                if (!saldoPorClinica[clinica]) {
+                    saldoPorClinica[clinica] = { qtd: 0, total: 0, pago: 0, pendente: 0, itens: [] };
+                }
+                saldoPorClinica[clinica].qtd++;
+                saldoPorClinica[clinica].total += valorConsiderado;
+                if (isPago) saldoPorClinica[clinica].pago += valorConsiderado;
+                else saldoPorClinica[clinica].pendente += valorConsiderado;
+
+                const registroObj = {
+                    data: formatarDataBR(dataExame),
+                    clinica,
+                    paciente: obterNomePaciente(item),
+                    tutor: obterNomeTutor(item),
+                    exames: examesConsiderados.join(', ') || 'Exame',
+                    valor: valorConsiderado,
+                    isPago
+                };
+
+                saldoPorClinica[clinica].itens.push(registroObj);
+                registrosFiltrados.push(registroObj);
+            });
+
+            const container = document.getElementById('resultado-relatorio');
+            const tituloRelatorio = montarTituloRelatorio(anosSel, mesesSel, statusSel);
+
+            const resumoFiltros = [
+                `Clínicas: ${clinicasSel.length ? clinicasSel.join(', ') : 'Todas'}`,
+                `Exames: ${examesSel.length ? examesSel.join(', ') : 'Todos'}`
+            ].join(' | ');
+
+            let textoZap = `*Dra. Ana Júlia Teixeira | Médica Veterinária*\n*${tituloRelatorio}*\n${resumoFiltros}\n\n`;
+
+            if (registrosFiltrados.length === 0) {
+                container.innerHTML = `
+                    <div class="p-6 text-center bg-slate-50 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-semibold">Nenhum registro encontrado para os filtros selecionados.</p>
+                    </div>
+                `;
+                ultimoTextoRelatorio = textoZap + 'Nenhum registro encontrado.';
+                return;
+            }
+
+            if (modoRelatorio === 'devedor') {
+                const clinicasDevedoras = Object.entries(saldoPorClinica)
+                    .filter(([, dados]) => dados.pendente > 0)
+                    .sort((a, b) => b[1].pendente - a[1].pendente);
+
+                textoZap += `*TOTAL A PAGAR: ${formatarMoeda(totalPendente)}*\n----------------------------------\n`;
+
+                let htmlDevedor = `
+                    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-1 item-relatorio-print">
+                        <span class="text-xs font-black uppercase text-amber-900 tracking-wide block">${tituloRelatorio}</span>
+                        <div class="text-xl font-black text-amber-800">${formatarMoeda(totalPendente)}</div>
+                        <p class="text-[10px] text-amber-800/80">${resumoFiltros}</p>
+                    </div>
+                    <div class="space-y-3">
+                `;
+
+                clinicasDevedoras.forEach(([nomeClinica, dados]) => {
+                    textoZap += `\n*${nomeClinica}*\nValor a Pagar: *${formatarMoeda(dados.pendente)}* (${dados.qtd} pendência(s))\n`;
+                    
+                    htmlDevedor += `
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white item-relatorio-print">
+                            <div class="px-3.5 py-2.5 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-slate-800 block text-xs">${nomeClinica}</span>
+                                    <span class="text-[10px] text-slate-500">${dados.qtd} ${dados.qtd === 1 ? 'atendimento em aberto' : 'atendimentos em aberto'}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[9px] font-bold uppercase text-amber-600 block">Valor a Pagar</span>
+                                    <span class="font-black text-amber-700 text-sm">${formatarMoeda(dados.pendente)}</span>
+                                </div>
+                            </div>
+                            <div class="divide-y divide-slate-100">
+                                ${dados.itens.map(it => {
+                                    const tutorInfo = it.tutor ? ` (Tutor: ${it.tutor})` : '';
+                                    textoZap += `  • ${it.data} - Paciente: *${it.paciente}*${tutorInfo} (${it.exames}): ${formatarMoeda(it.valor)}\n`;
+                                    return `
+                                        <div class="px-3.5 py-2 flex items-center justify-between gap-2 text-[11px] item-relatorio-print">
+                                            <div>
+                                                <span class="font-bold text-slate-800 block">Paciente: ${it.paciente}</span>
+                                                <span class="text-slate-500 block text-[10px]">${it.data} • ${it.exames}${tutorInfo}</span>
+                                            </div>
+                                            <span class="font-bold text-slate-800 shrink-0">${formatarMoeda(it.valor)}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                htmlDevedor += `</div>`;
+                container.innerHTML = htmlDevedor;
+                ultimoTextoRelatorio = textoZap;
+
+            } else {
+                const valorDestaque = statusSel === 'PENDENTE' ? totalPendente : (statusSel === 'PAGO' ? totalPago : totalGeral);
+                textoZap += `Total: *${formatarMoeda(valorDestaque)}*\n----------------------------------\n`;
+
+                const resumoClinicasArr = Object.entries(saldoPorClinica).sort((a, b) => b[1].total - a[1].total);
+
+                let htmlGeral = `
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 item-relatorio-print">
+                        <div>
+                            <span class="text-xs font-black uppercase text-brand-teal tracking-wide block">${tituloRelatorio}</span>
+                            <p class="text-[10px] text-slate-500">${resumoFiltros}</p>
+                        </div>
+                        <div class="grid ${statusSel === 'TODOS' ? 'grid-cols-3' : 'grid-cols-1'} gap-2 pt-1">
+                            ${statusSel === 'TODOS' ? `
+                                <div class="p-2 rounded-xl bg-white border border-slate-200">
+                                    <span class="text-[9px] font-bold uppercase text-slate-400 block">Total</span>
+                                    <span class="font-black text-slate-800 text-xs">${formatarMoeda(totalGeral)}</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-emerald-50 border border-emerald-200">
+                                    <span class="text-[9px] font-bold uppercase text-emerald-600 block">Pago</span>
+                                    <span class="font-black text-emerald-800 text-xs">${formatarMoeda(totalPago)}</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-amber-50 border border-amber-200">
+                                    <span class="text-[9px] font-bold uppercase text-amber-600 block">A Pagar</span>
+                                    <span class="font-black text-amber-800 text-xs">${formatarMoeda(totalPendente)}</span>
+                                </div>
+                            ` : `
+                                <div class="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
+                                    <span class="text-[10px] font-bold uppercase text-slate-500">${statusSel === 'PENDENTE' ? 'Total a Pagar' : 'Total Pago'}</span>
+                                    <span class="font-black text-slate-900 text-sm">${formatarMoeda(valorDestaque)}</span>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+
+                    <!-- Resumo por Clínica dentro do Relatório -->
+                    <div class="space-y-1.5">
+                        <h4 class="font-bold text-[11px] uppercase text-slate-600 tracking-wider">Resumo por Clínica</h4>
+                        <div class="space-y-1.5">
+                            ${resumoClinicasArr.map(([cNome, cDados]) => {
+                                const valClinica = statusSel === 'PENDENTE' ? cDados.pendente : (statusSel === 'PAGO' ? cDados.pago : cDados.total);
+                                textoZap += `\n*${cNome}* (${cDados.qtd}x): *${formatarMoeda(valClinica)}*\n`;
+                                return `
+                                    <div class="p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] item-relatorio-print">
+                                        <div>
+                                            <span class="font-bold text-slate-800">${cNome}</span>
+                                            <span class="text-[10px] text-slate-400 ml-1">(${cDados.qtd}x)</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 text-[10px]">
+                                            ${statusSel === 'TODOS' ? `
+                                                <span class="text-slate-600 font-semibold">Total: <strong>${formatarMoeda(cDados.total)}</strong></span>
+                                                <span class="text-emerald-700 font-semibold">Pago: <strong>${formatarMoeda(cDados.pago)}</strong></span>
+                                                <span class="text-amber-700 font-semibold">A Pagar: <strong>${formatarMoeda(cDados.pendente)}</strong></span>
+                                            ` : `
+                                                <span class="text-slate-800 font-extrabold text-xs">${formatarMoeda(valClinica)}</span>
+                                            `}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Lista Detalhada de Atendimentos -->
+                    <div class="space-y-1.5">
+                        <h4 class="font-bold text-[11px] uppercase text-slate-600 tracking-wider">Detalhamento dos Exames (${registrosFiltrados.length})</h4>
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white divide-y divide-slate-100">
+                            ${registrosFiltrados.map(r => {
+                                const tutorInfo = r.tutor ? ` • Tutor: ${r.tutor}` : '';
+                                textoZap += `• ${r.data} | Paciente: *${r.paciente}* | ${r.clinica} (${r.exames}) - ${formatarMoeda(r.valor)} [${r.isPago ? 'PAGO' : 'A PAGAR'}]\n`;
+                                return `
+                                    <div class="p-2.5 flex items-center justify-between gap-2 text-[11px] item-relatorio-print">
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <span class="font-bold text-slate-800">Paciente: ${r.paciente}</span>
+                                                <span class="text-[10px] text-slate-400">• ${r.data}</span>
+                                                <span class="text-[10px] font-semibold text-brand-teal">• ${r.clinica}</span>
+                                            </div>
+                                            <p class="text-[10px] text-slate-500">${r.exames}${tutorInfo}</p>
+                                        </div>
+                                        <div class="text-right shrink-0">
+                                            <span class="font-extrabold text-slate-800 block">${formatarMoeda(r.valor)}</span>
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${r.isPago ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                                                ${r.isPago ? 'PAGO' : 'A PAGAR'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML = htmlGeral;
+                ultimoTextoRelatorio = textoZap;
+            }
+        }
+
+        function copiarRelatorioTexto() {
+            if (!ultimoTextoRelatorio) return;
+            navigator.clipboard.writeText(ultimoTextoRelatorio).then(() => {
+                alert("Relatório copiado! Agora é só colar no WhatsApp.");
+            }).catch(() => {
+                alert("Não foi possível copiar automaticamente.");
+            });
         }
     </script>
 </body>
